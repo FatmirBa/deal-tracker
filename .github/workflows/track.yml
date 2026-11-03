@@ -44,6 +44,7 @@ jobs:
           SHOP: ${{ inputs.shop }}
         run: |
           set -o pipefail
+          mkdir -p data
           python -m tracker.run ${SHOP:+--shop "$SHOP"} 2>&1 | tee data/last_run.txt
       - name: Save prices
         run: |
