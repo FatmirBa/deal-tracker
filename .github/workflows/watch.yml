@@ -1,0 +1,41 @@
+name: Watch from issue
+
+# The app's "Watch something new" button opens an issue; this adds it to watch_extra.yaml.
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+  actions: write
+
+jobs:
+  watch:
+    # only the repo owner can change the watchlist
+    if: github.event.issue.user.login == github.repository_owner && (startsWith(github.event.issue.title, 'Watch:') || startsWith(github.event.issue.title, 'Unwatch:'))
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pyyaml
+      - name: Update watchlist
+        env:
+          TITLE: ${{ github.event.issue.title }}
+          BODY: ${{ github.event.issue.body }}
+        run: |
+          python -m tracker.watch_issue "$TITLE" "$BODY" > reply.txt
+          git config user.name "deal-tracker-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add watch_extra.yaml
+          git diff --cached --quiet || git commit -qm "$TITLE"
+          git push -q
+      - name: Reply and start a price check
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NUM: ${{ github.event.issue.number }}
+        run: |
+          gh issue close "$NUM" --comment "$(cat reply.txt)"
+          gh workflow run track.yml

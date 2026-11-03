@@ -1,0 +1,61 @@
+# What the tracker searches for. Add more from the phone app ("Watch something" button),
+# which opens a GitHub issue; the bot adds it to watch_extra.yaml automatically.
+#
+# queries:   search words sent to each shop (Bosnian / Croatian variants help)
+# must_any:  a result's title must contain one of these (no diacritics needed)
+# exclude:   drop results whose title contains any of these (accessories, parts)
+# min_price: anything cheaper is treated as an accessory, not the real thing
+# max_price: your target. You get a Telegram alert when something drops to or below it.
+
+common_exclude: [crijevo, filter, nosac, postolje, deterdzent, tablete, sredstvo, poklopac, torba, navlaka,
+  zastitn, folija, punjac, daljinski, kabl, adapter, "dio za", rezervni, drzac, ventil, "pumpa za", grijac,
+  remen, brtva, omeksivac, "sol za", "so za", cistac, sprej, "set za", polica, kosara, korpa za, "za kosu"]
+
+items:
+  - id: washer
+    name: Washing machine
+    kinds: [appliances]
+    queries: ["veš mašina", "mašina za veš", "perilica rublja"]
+    must_any: ["ves", "perilica rublja", "masina za pranje", "pranje vesa"]
+    min_price: 250
+    max_price: 600
+
+  - id: dishwasher
+    name: Dishwasher
+    kinds: [appliances]
+    queries: ["mašina za suđe", "perilica posuđa"]
+    must_any: ["sude", "suda", "posud", "sudja"]
+    min_price: 250
+    max_price: 600
+
+  - id: dryer
+    name: Dryer
+    kinds: [appliances]
+    queries: ["mašina za sušenje veša", "sušilica rublja"]
+    must_any: ["susen", "susilic", "susar"]
+    exclude: ["fen", "za kosu", "stalak", "susilo"]
+    min_price: 300
+    max_price: 600
+
+  - id: fridge
+    name: Fridge
+    kinds: [appliances]
+    queries: ["frižider", "hladnjak"]
+    must_any: ["frizider", "hladnjak", "kombinovani", "frizidera"]
+    exclude: ["prijenosni", "auto hladnjak", "magnet"]
+    min_price: 250
+
+  - id: tv
+    name: TV
+    kinds: [appliances]
+    queries: ["televizor", "smart tv"]
+    must_any: ["tv", "televizor", "oled", "qled"]
+    exclude: ["nosac", "stalak", "antena", "box", "stick", "projektor", "kutija"]
+    min_price: 200
+
+  - id: sofa
+    name: Corner sofa
+    kinds: [furniture]
+    queries: ["ugaona garnitura", "kutna garnitura"]
+    must_any: ["ugaon", "kutn", "garnitur", "sofa", "trosjed"]
+    min_price: 300

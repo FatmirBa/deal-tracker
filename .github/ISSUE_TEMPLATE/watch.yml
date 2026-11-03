@@ -1,0 +1,31 @@
+name: Watch a product
+description: Track prices for something new
+title: "Watch: "
+body:
+  - type: input
+    id: what
+    attributes:
+      label: What should I watch?
+      placeholder: e.g. Samsung TV 55, Bosch usisivač, zimske čizme
+    validations:
+      required: true
+  - type: input
+    id: max
+    attributes:
+      label: Max price (KM)
+      description: You get a Telegram alert at or below this price. Leave empty to get only real price drops.
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where to look
+      options:
+        - Appliances and electronics shops
+        - Furniture shops
+        - Anything (eKupi, Emmezeta, OLX)
+    validations:
+      required: true
+  - type: input
+    id: min
+    attributes:
+      label: Ignore under (KM)
+      description: Skips accessories and spare parts cheaper than this.

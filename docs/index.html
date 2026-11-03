@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Deal Tracker</title>
+<meta name="description" content="Appliance and furniture prices across Bosnian shops, with honest discount checks.">
+<meta name="theme-color" content="#FFD400">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+@font-face{font-family:"Barlow";font-weight:400;font-display:swap;src:url(fonts/barlow-latin-400-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Barlow";font-weight:400;font-display:swap;src:url(fonts/barlow-latin-ext-400-normal.woff2) format("woff2");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:"Barlow";font-weight:600;font-display:swap;src:url(fonts/barlow-latin-600-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Barlow";font-weight:600;font-display:swap;src:url(fonts/barlow-latin-ext-600-normal.woff2) format("woff2");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:"Barlow Condensed";font-weight:600;font-display:swap;src:url(fonts/barlow-condensed-latin-600-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Barlow Condensed";font-weight:600;font-display:swap;src:url(fonts/barlow-condensed-latin-ext-600-normal.woff2) format("woff2");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:"Barlow Condensed";font-weight:700;font-display:swap;src:url(fonts/barlow-condensed-latin-700-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Barlow Condensed";font-weight:700;font-display:swap;src:url(fonts/barlow-condensed-latin-ext-700-normal.woff2) format("woff2");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+
+:root{
+  --floor:#F2F3F5; --card:#FFFFFF; --ink:#16181D; --soft:#5D636E; --line:#DADDE2;
+  --tag:#FFD400; --tag-ink:#16181D; --good:#0B7A43; --good-bg:#E3F3EA; --warn:#B4410E; --warn-bg:#FCEADF;
+  --chip:#E4E6EA; --chip-on:#16181D; --chip-on-ink:#FFFFFF; --focus:#2457D6;
+  --cond:"Barlow Condensed","Arial Narrow",sans-serif; --text:"Barlow",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --floor:#121417; --card:#1B1E23; --ink:#ECEDEF; --soft:#A2A8B3; --line:#2C3038;
+    --good:#4CC488; --good-bg:#14301F; --warn:#F08A55; --warn-bg:#3A2116;
+    --chip:#262A31; --chip-on:#FFD400; --chip-on-ink:#16181D; --focus:#8FB0FF; --target-bg:rgba(255,212,0,.16); --target-ink:#FFD400;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--floor);color:var(--ink);font:16px/1.45 var(--text)}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px;border-radius:4px}
+button,input,select{font:inherit;color:inherit}
+.wrap{max-width:1120px;margin:0 auto;padding:0 16px}
+
+/* top bar */
+.top{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;padding:calc(18px + env(safe-area-inset-top)) 0 10px}
+.top h1{font:700 34px/1 var(--cond);letter-spacing:-.01em;margin:0}
+.checked{margin:4px 0 0;color:var(--soft);font-size:14px}
+.checked.stale{color:var(--warn)}
+.shopsbtn{background:none;border:1px solid var(--line);border-radius:20px;padding:6px 12px;font-size:14px;cursor:pointer;white-space:nowrap}
+.shopsbtn .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--good);margin-right:6px;vertical-align:1px}
+.shopsbtn.partial .dot{background:var(--warn)}
+#shoppanel{display:none;margin:4px 0 12px;padding:12px 14px;background:var(--card);border:1px solid var(--line);border-radius:12px;font-size:14px}
+#shoppanel.open{display:block}
+#shoppanel ul{list-style:none;margin:0;padding:0;columns:2;column-gap:20px}
+#shoppanel li{padding:3px 0;break-inside:avoid}
+#shoppanel .no{color:var(--soft)}
+#shoppanel p{margin:10px 0 0;color:var(--soft)}
+
+/* your list */
+.mylist{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:6px 0;margin:6px 0 14px}
+.mylist h2{font:600 15px/1 var(--text);color:var(--soft);margin:10px 16px 6px}
+.row{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:12px;width:100%;padding:9px 16px;background:none;border:0;border-top:1px solid var(--line);text-align:left;cursor:pointer}
+.row:first-of-type{border-top:0}
+.row:hover{background:color-mix(in srgb,var(--floor) 60%,transparent)}
+.row .nm{font-weight:600}
+.row .nm small{display:block;font-weight:400;color:var(--soft);font-size:13px}
+.row .best{font:700 22px/1 var(--cond)}
+.row .best small{font-size:14px;margin-left:2px}
+.row .st{font-size:13px;min-width:86px;text-align:right}
+.row .st.ok{color:var(--good)} .row .st.over{color:var(--soft)}
+.total{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:12px 16px 8px;border-top:1px solid var(--line)}
+.total span{color:var(--soft);font-size:14px}
+.total b{font:700 26px/1 var(--cond)}
+
+/* controls */
+.controls{position:sticky;top:0;z-index:5;background:var(--floor);padding:10px 0 6px}
+.search{position:relative}
+.search input{width:100%;padding:13px 14px 13px 42px;border:1.5px solid var(--line);border-radius:12px;background:var(--card);font-size:17px}
+.search input:focus{border-color:var(--ink);outline:none}
+.search svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--soft)}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:10px 0 2px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:0;border-radius:18px;padding:7px 13px;background:var(--chip);cursor:pointer;font-size:15px;white-space:nowrap}
+.chip[aria-pressed="true"]{background:var(--chip-on);color:var(--chip-on-ink);font-weight:600}
+.chip.add{background:none;border:1.5px dashed var(--line);text-decoration:none;display:inline-flex;align-items:center}
+.opts{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;padding:2px 0 4px;font-size:14px}
+.opts label{display:inline-flex;align-items:center;gap:6px;cursor:pointer}
+.opts input{width:18px;height:18px;accent-color:var(--ink)}
+.opts select{margin-left:auto;border:1px solid var(--line);background:var(--card);border-radius:8px;padding:5px 8px}
+
+/* results */
+.group h2{font:700 24px/1.1 var(--cond);margin:22px 0 4px;display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.group h2 button{font:600 14px var(--text);background:none;border:0;color:var(--soft);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.grid{display:grid;grid-template-columns:1fr;gap:10px}
+@media (min-width:700px){.grid{grid-template-columns:1fr 1fr}}
+@media (min-width:1040px){.grid{grid-template-columns:1fr 1fr 1fr}}
+.deal{display:grid;grid-template-columns:88px 1fr;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px}
+.thumb{display:block;width:88px;height:88px;border-radius:8px;background:#fff;overflow:hidden;align-self:start}
+.thumb img{width:100%;height:100%;object-fit:contain}
+.thumb.none{background:var(--chip)}
+.deal h3{font:600 15px/1.3 var(--text);margin:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.deal h3 a{text-decoration:none}
+.deal h3 a:hover{text-decoration:underline}
+.where{margin:2px 0 8px;font-size:13px;color:var(--soft)}
+.where .used{margin-left:6px;padding:1px 6px;border:1px solid var(--line);border-radius:4px}
+.tagrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+
+/* the shelf tag */
+.tag{position:relative;display:inline-flex;align-items:baseline;gap:3px;background:var(--tag);color:var(--tag-ink);padding:3px 10px 2px 20px;border-radius:3px 6px 6px 3px;clip-path:polygon(9px 0,100% 0,100% 100%,9px 100%,0 50%)}
+.tag::before{content:"";position:absolute;left:8px;top:50%;width:5px;height:5px;margin-top:-2.5px;border-radius:50%;background:var(--card)}
+.tag b{font:700 30px/1 var(--cond);letter-spacing:-.01em}
+.tag small{font:600 14px/1 var(--cond)}
+.was{font-size:14px;color:var(--soft)}
+.was s{text-decoration-thickness:1px}
+.spark{display:block;width:100%;max-width:220px;height:26px;margin:8px 0 2px}
+.spark path{fill:none;stroke:var(--soft);stroke-width:1.5}
+.spark circle{fill:var(--ink)}
+.verdicts{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.v{font-size:13px;padding:2px 8px;border-radius:5px;background:var(--chip)}
+.v.good{background:var(--good-bg);color:var(--good);font-weight:600}
+.v.warn{background:var(--warn-bg);color:var(--warn);font-weight:600}
+.v.target{background:var(--target-bg,#FFF1A6);color:var(--target-ink,#16181D)}
+.also{margin:8px 0 0;font-size:13px;color:var(--soft)}
+.also a{color:var(--ink);font-weight:600}
+details.hist{margin-top:6px;font-size:13px}
+details.hist summary{cursor:pointer;color:var(--soft)}
+details.hist svg{width:100%;height:120px;margin-top:6px}
+details.hist .axis{font:12px var(--text);fill:var(--soft)}
+details.hist .ln{fill:none;stroke:var(--ink);stroke-width:2}
+details.hist .lo{stroke:var(--good);stroke-dasharray:3 3}
+.more{display:block;margin:10px auto 0;background:none;border:1px solid var(--line);border-radius:10px;padding:9px 16px;cursor:pointer}
+
+.empty{padding:36px 8px;text-align:center;color:var(--soft)}
+.empty b{display:block;color:var(--ink);font:700 22px var(--cond);margin-bottom:6px}
+.empty a{color:var(--ink);font-weight:600}
+footer{padding:28px 0 calc(28px + env(safe-area-inset-bottom));color:var(--soft);font-size:13px}
+footer a{color:var(--ink)}
+@media (prefers-reduced-motion:no-preference){.deal.fresh{animation:in .25s ease-out both}@keyframes in{from{opacity:.4}}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>Deals</h1>
+      <p class="checked" id="checked">Loading prices…</p>
+    </div>
+    <button class="shopsbtn" id="shopsbtn" aria-expanded="false" aria-controls="shoppanel"><span class="dot"></span><span id="shopcount">Shops</span></button>
+  </header>
+  <div id="shoppanel"></div>
+
+  <section class="mylist" id="mylist" aria-label="Your shopping list" hidden></section>
+
+  <div class="controls">
+    <div class="search">
+      <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 16l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <input id="q" type="search" placeholder="Search product or model" autocomplete="off" aria-label="Search products">
+    </div>
+    <div class="chips" id="chips" role="group" aria-label="Filter by item"></div>
+  </div>
+  <div class="opts">
+      <label><input type="checkbox" id="fDeals"> Real drops</label>
+      <label><input type="checkbox" id="fTarget"> Under target</label>
+      <label><input type="checkbox" id="fOlx"> Hide OLX</label>
+      <select id="sort" aria-label="Sort">
+        <option value="price">Cheapest first</option>
+        <option value="drop">Biggest drop</option>
+        <option value="new">Newest first</option>
+      </select>
+  </div>
+
+  <main id="results" aria-live="polite"></main>
+  <footer id="foot"></footer>
+</div>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const fmt = new Intl.NumberFormat("bs-BA", { maximumFractionDigits: 2, minimumFractionDigits: 0 });
+const km = (v) => fmt.format(Math.round(v * 100) / 100);
+const norm = (s) => (s || "").toLowerCase().replace(/đ/g, "d").normalize("NFKD").replace(/[̀-ͯ]/g, "");
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const store = { get(k, d) { try { const v = localStorage.getItem("dt:" + k); return v === null ? d : JSON.parse(v); } catch { return d; } },
+                set(k, v) { try { localStorage.setItem("dt:" + k, JSON.stringify(v)); } catch {} } };
+
+let DATA = null, ITEMS = {}, SHOPS = {}, BYMODEL = {};
+const state = { q: "", item: store.get("item", "all"), deals: store.get("deals", false), target: store.get("target", false),
+                olx: store.get("olx", false), sort: store.get("sort", "price"), expanded: {} };
+
+function ago(iso) {
+  const m = Math.round((Date.now() - new Date(iso)) / 60000);
+  if (m < 2) return "just now";
+  if (m < 60) return `${m} min ago`;
+  const h = Math.round(m / 60);
+  return h < 48 ? `${h} h ago` : `${Math.round(h / 24)} days ago`;
+}
+const isOlx = (p) => p.s === "olx";
+const repoUrl = () => DATA && DATA.repo ? `https://github.com/${DATA.repo}` : null;
+
+function spark(p, w = 220, h = 26) {
+  const pts = (p.h || []).map((x) => x[1]);
+  if (!pts.length || pts[pts.length - 1] !== p.p) pts.push(p.p);
+  if (pts.length < 2) return "";
+  const lo = Math.min(...pts), hi = Math.max(...pts), span = hi - lo || 1;
+  const step = w / (pts.length - 1);
+  const xy = pts.map((v, i) => [i * step, h - 3 - ((v - lo) / span) * (h - 6)]);
+  const d = xy.map(([x, y], i) => `${i ? "L" : "M"}${x.toFixed(1)},${y.toFixed(1)}`).join("");
+  const [lx, ly] = xy[xy.length - 1];
+  return `<svg class="spark" viewBox="-3 0 ${w + 6} ${h}" preserveAspectRatio="none" aria-hidden="true"><path d="${d}"/><circle cx="${lx}" cy="${ly}" r="3"/></svg>`;
+}
+
+function histChart(p) {
+  const rows = (p.h || []).slice();
+  if (!rows.length) return "<p>No history yet.</p>";
+  const W = 320, H = 120, padL = 40, padB = 18;
+  const vals = rows.map((r) => r[1]);
+  const lo = Math.min(...vals), hi = Math.max(...vals), span = hi - lo || 1;
+  const x = (i) => padL + (rows.length === 1 ? 0 : i * (W - padL - 6) / (rows.length - 1));
+  const y = (v) => 8 + (1 - (v - lo) / span) * (H - padB - 14);
+  const d = rows.map((r, i) => `${i ? "L" : "M"}${x(i).toFixed(1)},${y(r[1]).toFixed(1)}`).join("");
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Price history from ${km(lo)} to ${km(hi)} KM">
+    <line class="lo" x1="${padL}" x2="${W - 6}" y1="${y(lo)}" y2="${y(lo)}"/>
+    <path class="ln" d="${d}"/>
+    <text class="axis" x="0" y="${y(hi) + 4}">${km(hi)}</text><text class="axis" x="0" y="${y(lo) + 4}">${km(lo)}</text>
+    <text class="axis" x="${padL}" y="${H - 2}">${esc(rows[0][0])}</text><text class="axis" x="${W - 6}" y="${H - 2}" text-anchor="end">${esc(rows[rows.length - 1][0])}</text>
+  </svg>`;
+}
+
+function verdicts(p) {
+  const out = [];
+  const item = ITEMS[p.i] || {};
+  if (p.low30) out.push(`<span class="v good">Lowest in 30 days</span>`);
+  else if (p.drop_pct > 0) out.push(`<span class="v good">−${p.drop_pct}% since last check</span>`);
+  if (p.inflated) out.push(`<span class="v warn">"Was" price never seen here</span>`);
+  if (item.target && p.p <= item.target) out.push(`<span class="v target">Under your ${km(item.target)} KM</span>`);
+  if (!p.low30 && !p.inflated && p.days < 3) out.push(`<span class="v">Tracking since ${esc((p.fs || "").slice(5).split("-").reverse().join("."))}</span>`);
+  return out.join("");
+}
+
+function card(p) {
+  const shop = SHOPS[p.s]?.name || p.s;
+  const others = p.m ? (BYMODEL[p.m] || []).filter((o) => o.k !== p.k && o.i === p.i).slice(0, 3) : [];
+  const also = others.length ? `<p class="also">Same model: ${others.map((o) => `<a href="${esc(o.u)}" target="_blank" rel="noopener">${esc(SHOPS[o.s]?.name || o.s)}${isOlx(o) ? " (used)" : ""} ${km(o.p)} KM</a>`).join(", ")}</p>` : "";
+  const was = p.o && p.o > p.p ? `<span class="was">was <s>${km(p.o)}</s> (−${Math.round((1 - p.p / p.o) * 100)}%)</span>` : "";
+  const img = p.img ? `<a class="thumb" href="${esc(p.u)}" target="_blank" rel="noopener" tabindex="-1"><img src="${esc(p.img)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.parentNode.classList.add('none');this.remove()"></a>` : `<span class="thumb none"></span>`;
+  const histN = (p.h || []).length;
+  return `<article class="deal">
+    ${img}
+    <div>
+      <h3><a href="${esc(p.u)}" target="_blank" rel="noopener">${esc(p.t)}</a></h3>
+      <p class="where">${esc(shop)}${isOlx(p) ? `<span class="used">private / used</span>` : ""}</p>
+      <div class="tagrow"><span class="tag"><b>${km(p.p)}</b><small>KM</small></span>${was}</div>
+      ${spark(p)}
+      <div class="verdicts">${verdicts(p)}</div>
+      ${also}
+      ${histN >= 2 ? `<details class="hist"><summary>Price history, ${histN} days</summary>${histChart(p)}</details>` : ""}
+    </div>
+  </article>`;
+}
+
+function filtered() {
+  const q = norm(state.q).trim();
+  const words = q.split(/\s+/).filter(Boolean);
+  let list = DATA.products.filter((p) => {
+    if (state.item !== "all" && p.i !== state.item) return false;
+    if (state.olx && isOlx(p)) return false;
+    if (state.deals && !(p.low30 || p.drop_pct >= 5)) return false;
+    const t = ITEMS[p.i]?.target;
+    if (state.target && !(t && p.p <= t)) return false;
+    if (words.length) { const hay = norm(p.t + " " + (p.m || "") + " " + (SHOPS[p.s]?.name || "")); if (!words.every((w) => hay.includes(w))) return false; }
+    return true;
+  });
+  const by = { price: (a, b) => a.p - b.p, drop: (a, b) => (b.drop_pct || 0) - (a.drop_pct || 0) || a.p - b.p,
+               new: (a, b) => (b.fs || "").localeCompare(a.fs || "") || a.p - b.p }[state.sort];
+  return list.sort(by);
+}
+
+function renderList() {
+  const el = $("#mylist");
+  const rows = DATA.items.map((it) => {
+    const pool = DATA.products.filter((p) => p.i === it.id && !isOlx(p));
+    const best = pool.reduce((m, p) => (!m || p.p < m.p ? p : m), null);
+    let st = "";
+    if (best && it.target) st = best.p <= it.target ? `<span class="st ok">${pool.filter((p) => p.p <= it.target).length} under ${km(it.target)}</span>` : `<span class="st over">${km(best.p - it.target)} over target</span>`;
+    else if (best) st = `<span class="st over">${pool.length} found</span>`;
+    else st = `<span class="st over">none yet</span>`;
+    return { it, best, html: `<button class="row" data-item="${esc(it.id)}"><span class="nm">${esc(it.name)}${best ? `<small>${esc(SHOPS[best.s]?.name || best.s)}</small>` : ""}</span>
+      <span class="best">${best ? `${km(best.p)}<small>KM</small>` : "—"}</span>${st}</button>` };
+  });
+  const sum = rows.reduce((s, r) => s + (r.best ? r.best.p : 0), 0);
+  const missing = rows.filter((r) => !r.best).length;
+  el.innerHTML = `<h2>Your list, cheapest new prices today</h2>${rows.map((r) => r.html).join("")}
+    <div class="total"><span>Whole list${missing ? `, ${missing} item${missing > 1 ? "s" : ""} not found yet` : ""}</span><b>${km(sum)} KM</b></div>`;
+  el.hidden = false;
+  el.querySelectorAll(".row").forEach((b) => b.onclick = () => { setItem(b.dataset.item); $(".controls").scrollIntoView({ behavior: "smooth" }); });
+}
+
+function renderChips() {
+  const repo = repoUrl();
+  $("#chips").innerHTML = [`<button class="chip" data-item="all" aria-pressed="${state.item === "all"}">All</button>`]
+    .concat(DATA.items.map((it) => `<button class="chip" data-item="${esc(it.id)}" aria-pressed="${state.item === it.id}">${esc(it.name)}</button>`))
+    .concat(repo ? [`<a class="chip add" href="${repo}/issues/new?template=watch.yml" target="_blank" rel="noopener">Watch something new</a>`] : []).join("");
+  $("#chips").querySelectorAll("button.chip").forEach((b) => b.onclick = () => setItem(b.dataset.item));
+}
+
+function setItem(id) { state.item = id; store.set("item", id); renderChips(); renderResults(); }
+
+function renderResults() {
+  const list = filtered();
+  const box = $("#results");
+  if (!DATA.products.length) {
+    const r = repoUrl();
+    box.innerHTML = `<div class="empty"><b>No prices yet</b>The first check runs automatically every 3 hours.${r ? ` To start one now, open <a href="${r}/actions/workflows/track.yml" target="_blank" rel="noopener">Track prices</a> and press Run workflow.` : ""}</div>`;
+    return;
+  }
+  if (!list.length) { box.innerHTML = `<div class="empty"><b>Nothing matches</b>Clear the search or switch off a filter to see more.</div>`; return; }
+  const grouped = state.item === "all" && !state.q.trim();
+  if (!grouped) { box.innerHTML = `<div class="grid">${list.slice(0, state.expanded.flat || 60).map(card).join("")}</div>` +
+    (list.length > (state.expanded.flat || 60) ? `<button class="more" data-more="flat">Show ${list.length - (state.expanded.flat || 60)} more</button>` : ""); }
+  else {
+    box.innerHTML = DATA.items.map((it) => {
+      const g = list.filter((p) => p.i === it.id);
+      if (!g.length) return "";
+      const n = state.expanded[it.id] || 4;
+      return `<section class="group"><h2>${esc(it.name)} <button data-item="${esc(it.id)}">See all ${g.length}</button></h2>
+        <div class="grid">${g.slice(0, n).map(card).join("")}</div></section>`;
+    }).join("");
+    box.querySelectorAll(".group h2 button").forEach((b) => b.onclick = () => setItem(b.dataset.item));
+  }
+  box.querySelectorAll("[data-more]").forEach((b) => b.onclick = () => { state.expanded.flat = (state.expanded.flat || 60) + 60; renderResults(); });
+}
+
+function renderTop() {
+  const c = $("#checked");
+  const hrs = (Date.now() - new Date(DATA.generated)) / 3.6e6;
+  c.textContent = `Prices checked ${ago(DATA.generated)}, ${DATA.products.length} products`;
+  c.classList.toggle("stale", hrs > 8);
+  if (hrs > 8) c.textContent += ". The last checks didn't finish; see GitHub Actions.";
+  const ok = DATA.shops.filter((s) => s.ok).length;
+  $("#shopcount").textContent = `${ok}/${DATA.shops.length} shops`;
+  $("#shopsbtn").classList.toggle("partial", ok < DATA.shops.length);
+  const r = repoUrl();
+  $("#shoppanel").innerHTML = `<ul>${DATA.shops.map((s) => `<li class="${s.ok ? "" : "no"}">${esc(s.name)}: ${s.ok ? `${s.count} products` : esc(s.note || "no results this time")}</li>`).join("")}</ul>
+    ${r ? `<p>Shops with no results are retried on the next check. Change the shop list in <a href="${r}/blob/main/shops.yaml" target="_blank" rel="noopener">shops.yaml</a>.</p>` : ""}`;
+  $("#foot").innerHTML = r ? `Prices are fetched from each shop's website every 3 hours. <a href="${r}" target="_blank" rel="noopener">Project on GitHub</a>` : "";
+}
+
+async function load() {
+  try {
+    const res = await fetch("data/products.json?t=" + Date.now(), { cache: "no-store" });
+    if (!res.ok) throw new Error(res.status);
+    DATA = await res.json();
+  } catch (e) {
+    $("#checked").textContent = "Couldn't load prices. Check your connection and reload.";
+    $("#results").innerHTML = "";
+    return;
+  }
+  ITEMS = Object.fromEntries(DATA.items.map((it) => [it.id, it]));
+  SHOPS = Object.fromEntries(DATA.shops.map((s) => [s.id, s]));
+  BYMODEL = {};
+  for (const p of DATA.products) if (p.m) (BYMODEL[p.m] ||= []).push(p);
+  for (const m in BYMODEL) BYMODEL[m].sort((a, b) => a.p - b.p);
+  if (state.item !== "all" && !ITEMS[state.item]) state.item = "all";
+  renderTop(); renderList(); renderChips(); renderResults();
+}
+
+$("#q").addEventListener("input", (e) => { state.q = e.target.value; renderResults(); });
+for (const [id, key] of [["#fDeals", "deals"], ["#fTarget", "target"], ["#fOlx", "olx"]]) {
+  const el = $(id); el.checked = state[key];
+  el.onchange = () => { state[key] = el.checked; store.set(key, el.checked); renderResults(); };
+}
+$("#sort").value = state.sort;
+$("#sort").onchange = (e) => { state.sort = e.target.value; store.set("sort", state.sort); renderResults(); };
+$("#shopsbtn").onclick = () => { const p = $("#shoppanel"); const open = !p.classList.contains("open"); p.classList.toggle("open", open); $("#shopsbtn").setAttribute("aria-expanded", open); };
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && DATA && Date.now() - new Date(DATA.generated) > 3.6e6) load(); });
+if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("sw.js").catch(() => {});
+load();
+</script>
+</body>
+</html>

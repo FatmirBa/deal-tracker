@@ -1,0 +1,60 @@
+name: Track prices
+
+on:
+  schedule:
+    - cron: "23 */3 * * *"        # every 3 hours
+  workflow_dispatch:
+    inputs:
+      shop:
+        description: "Only this shop id (optional)"
+        required: false
+  push:
+    branches: [main]
+    paths: ["tracker/**", "shops.yaml", "watchlist.yaml", "watch_extra.yaml", "docs/index.html", "run.request"]
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: track
+  cancel-in-progress: false
+
+jobs:
+  track:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Install headless browser (for shops that need JavaScript)
+        run: python -m playwright install --with-deps chromium
+      - name: Check prices
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          SHOP: ${{ inputs.shop }}
+        run: |
+          set -o pipefail
+          python -m tracker.run ${SHOP:+--shop "$SHOP"} 2>&1 | tee data/last_run.txt
+      - name: Save prices
+        run: |
+          git config user.name "deal-tracker-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data docs/data
+          git diff --cached --quiet || git commit -qm "Prices $(date -u +'%F %H:%M') UTC"
+          for i in 1 2 3; do git pull --rebase -q && git push -q && break; sleep 5; done
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+      - id: deploy
+        uses: actions/deploy-pages@v4

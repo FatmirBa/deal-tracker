@@ -1,0 +1,74 @@
+# Shops the tracker checks.
+# search: URL with {q} where the search words go. Leave it out and the tracker finds it by itself
+#         (the result is cached in data/discovered.json).
+# kinds:  which watchlist items this shop is searched for (appliances, furniture, everything).
+# render: true for shops that only show products after JavaScript runs.
+# selectors: optional CSS selectors if automatic extraction misses (card/title/price/old_price/link).
+
+delay_seconds: 1.5
+
+shops:
+  - id: domod
+    name: Domod
+    home: https://www.domod.ba
+    kinds: [appliances, furniture]
+
+  - id: imtec
+    name: Imtec
+    home: https://www.imtec.ba
+    kinds: [appliances]
+
+  - id: technoshop
+    name: Technoshop
+    home: https://www.technoshop.ba
+    kinds: [appliances]
+
+  - id: tehnodepo
+    name: Tehnodepo
+    home: https://www.tehnodepo.ba
+    kinds: [appliances]
+
+  - id: topizbor
+    name: Topizbor
+    home: https://www.topizbor.ba
+    kinds: [appliances]
+
+  - id: ekupi
+    name: eKupi
+    home: https://www.ekupi.ba
+    kinds: [appliances, furniture, everything]
+
+  - id: emmezeta
+    name: Emmezeta
+    home: https://www.emmezeta.ba
+    kinds: [appliances, furniture, everything]
+
+  - id: jysk
+    name: JYSK
+    home: https://jysk.ba
+    kinds: [furniture]
+
+  - id: formaideale
+    name: Forma Ideale
+    home: https://www.formaideale.ba
+    kinds: [furniture]
+
+  - id: olx
+    name: OLX.ba
+    home: https://olx.ba
+    search: https://olx.ba/pretraga?q={q}
+    kinds: [appliances, furniture, everything]
+    marketplace: true      # private sellers too: prices can be "po dogovoru", used items
+    url_template: https://olx.ba/artikal/{id}
+    alerts: false          # shown in the app, but no Telegram pings (too many used listings)
+
+# Extra candidates the probe checks; promote any that work into the list above.
+candidates:
+  - https://www.winwin.ba
+  - https://www.tehnomag.ba
+  - https://www.bingotehnika.ba
+  - https://www.mall.ba
+  - https://www.lesnina.ba
+  - https://www.xxxlesnina.ba
+  - https://www.ikea.com/ba/bs/
+  - https://www.gigatron.ba
