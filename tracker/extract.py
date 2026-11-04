@@ -128,7 +128,10 @@ def from_jsonld(soup: BeautifulSoup, base: str) -> list[Product]:
             offers = node.get("offers") or {}
             if isinstance(offers, list):
                 offers = offers[0] if offers else {}
-            price = _num(offers.get("price") or offers.get("lowPrice") or (offers.get("priceSpecification") or {}).get("price"))
+            spec = offers.get("priceSpecification") or {}
+            if isinstance(spec, list):
+                spec = spec[0] if spec and isinstance(spec[0], dict) else {}
+            price = _num(offers.get("price") or offers.get("lowPrice") or spec.get("price"))
             title = _clean(node.get("name", ""))
             url = _abs(base, node.get("url") or offers.get("url"))
             img = node.get("image")
@@ -335,13 +338,20 @@ def extract(text: str, base: str, selectors: dict | None = None, url_template: s
     is_json = text.lstrip().startswith(("{", "["))
     soup = None if is_json else BeautifulSoup(text, "lxml")
     results = {}
+    def safe(name, fn):
+        try:
+            results[name] = dedupe(fn())
+        except Exception as e:  # one odd page format must never stop the whole run
+            report[f"{name}_error"] = f"{type(e).__name__}: {str(e)[:80]}"
+            results[name] = []
+
     if selectors and soup is not None:
-        results["selectors"] = dedupe(from_selectors(soup, base, selectors))
+        safe("selectors", lambda: from_selectors(soup, base, selectors))
     if soup is not None:
-        results["jsonld"] = dedupe(from_jsonld(soup, base))
-    results["embedded"] = dedupe(from_embedded(text, soup, base, url_template))
+        safe("jsonld", lambda: from_jsonld(soup, base))
+    safe("embedded", lambda: from_embedded(text, soup, base, url_template))
     if soup is not None:
-        results["cards"] = dedupe(from_cards(BeautifulSoup(text, "lxml"), base))
+        safe("cards", lambda: from_cards(BeautifulSoup(text, "lxml"), base))
     for k, v in results.items():
         report[k] = len(v)
     if selectors and results.get("selectors"):

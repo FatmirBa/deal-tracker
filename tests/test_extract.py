@@ -22,7 +22,7 @@ OLXAPI = '{"data":[{"id":5551,"title":"Ugaona garnitura na razvlačenje","price"
 
 def test_parse():
     assert parse_number("1.299,00") == 1299.0
-    assert parse_number("1 299,90") == 1299.9
+    assert parse_number("1 299,90") == 1299.9  # direct parse still accepts spaces
     assert parse_number("1,299.00") == 1299.0
     assert parse_number("849,9") == 849.9
     assert find_prices("Cijena: 1.299,00 KM, rata 108,25 KM mjesečno") == [1299.0]
@@ -70,3 +70,10 @@ def test_real_shop_formats():
     assert find_prices("2.079,- KM 1.999,- KM") == [2079.0, 1999.0]
     # savings badge
     assert find_prices("892 KM -251 KM 641 KM") == [892.0, 641.0]
+
+
+def test_title_digits_never_merge_into_price():
+    # Bingo: model number right before the price
+    assert find_prices("FINLUX FRIŽIDER GN 76L/10L 110/FN1101\n   349,00 KM") == [349.0]
+    assert find_prices('Samsung TV 55 899 KM') == [899.0]
+    assert find_prices("1\u00a0299,00 KM") == [1299.0]  # non-breaking space thousands still fine
