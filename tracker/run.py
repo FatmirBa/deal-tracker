@@ -88,7 +88,10 @@ def crawl(shops_cfg, watch, only_shop=None):
                 print(f"[{sid}] skipped: no search page found", flush=True)
                 continue
             kinds = set(shop.get("kinds") or ["everything"])
+            only = set(shop.get("items") or [])
             for item in watch["items"]:
+                if only and item["id"] not in only:
+                    continue
                 item_kinds = set(item.get("kinds") or ["everything"])
                 if not (kinds & item_kinds or "everything" in kinds):
                     continue

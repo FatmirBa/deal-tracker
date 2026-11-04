@@ -62,6 +62,58 @@ shops:
       fridge: [https://topizbor.ba/rashladni-aparati/frizideri-sa-zamrzivacem, https://topizbor.ba/rashladni-aparati/frizideri]
       tv: [https://topizbor.ba/televizori]
 
+  - id: bingo
+    name: Bingo
+    home: https://bingoshop.ba
+    search: https://bingoshop.ba/pretraga?keywords={q}
+    kinds: [appliances]
+
+  - id: fontele
+    name: Fontele
+    home: https://fontele.ba
+    search: https://fontele.ba/pretraga?keywords={q}
+    kinds: [appliances]
+
+  - id: genelec
+    name: Genelec
+    home: https://genelec.ba
+    search: https://genelec.ba/?post_type=product&dgwt_wcas=1&s={q}
+    kinds: [appliances]
+    items: [tv]          # mostly TVs and computers
+
+  - id: procomp
+    name: Procomp
+    home: https://procomp.ba
+    search: https://procomp.ba/search?controller=search&s={q}
+    kinds: [appliances]
+    items: [tv]
+
+  - id: saga
+    name: Saga
+    home: https://saga-bih.com
+    search: https://saga-bih.com/?post_type=product&s={q}
+    kinds: [furniture]
+    pages:
+      sofa: [https://saga-bih.com/kategorija/namjestaj/dnevni-boravci/garniture/ugaone-garniture/]
+      wardrobe: [https://saga-bih.com/kategorija/namjestaj/spavace-sobe/ormari/]
+
+  - id: gama
+    name: Gama
+    home: https://www.gamashop.ba
+    search: https://www.gamashop.ba/?s={q}&post_type=product
+    kinds: [furniture]
+    pages:
+      wardrobe: [https://www.gamashop.ba/ormari]
+
+  - id: jysk
+    name: JYSK
+    home: https://jysk.ba
+    kinds: [furniture]
+    render: true         # product lists are built by JavaScript
+    pages:
+      wardrobe: [https://jysk.ba/odlaganje/ormari]
+      sofa: [https://jysk.ba/dnevna-soba/sofe, https://jysk.ba/dnevna-soba/modularne-sofe]
+
   - id: olx
     name: OLX.ba
     home: https://olx.ba
@@ -71,16 +123,8 @@ shops:
     url_template: https://olx.ba/artikal/{id}
     alerts: false          # shown in the app, but no Telegram pings (too many used listings)
 
-# Extra candidates the probe checks; promote any that work into the list above.
-candidates:
-  - https://jysk.ba              # search is built by JavaScript; needs category pages
-  - https://emmezeta.ba
-  - https://formaideale.ba
-  - https://tehnomag.com
-  - https://www.winwin.ba
-  - https://www.bingotehnika.ba
-  - https://www.mall.ba
-  - https://www.lesnina.ba
-  - https://www.xxxlesnina.ba
-  - https://www.ikea.com/ba/bs/
-  - https://www.gigatron.ba
+# Tested and left out:
+#   blocked automated visits (HTTP 403): zeusbl.com, 3dbox.ba, dalusso.ba, deluxehome.ba, mirnanamjestaj.ba, kesten.ba, domavija.ba
+#   no readable prices: zokielektronika.ba (JavaScript only), tehnomag.com (prices without currency), sinmax.ba, kalea.ba (no prices online)
+#   not in BiH: Forma Ideale, Emmezeta, IKEA
+candidates: []

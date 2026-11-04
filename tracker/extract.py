@@ -22,6 +22,12 @@ from .prices import clean_title, find_prices, parse_number
 OLD_HINT = re.compile(r"old|regular|stara|before|was|prev|line-through|strike|crossed|precrt|redovn|mpc", re.I)
 NEW_HINT = re.compile(r"\b(new|sale|special|akcij|current|final|actual|discount|price--now|now)\b", re.I)
 TITLE_HINT = re.compile(r"title|name|naziv|naslov|product-link", re.I)
+BUTTON_TEXT = re.compile(r"^(detaljnije|vi[sš]e|pogledaj|kupi|dodaj u korpu|dodaj|brzi pregled|uporedi|op[sš]irnije|saznaj vi[sš]e|"
+                         r"details|more|buy|add to cart|quick view|naru[cč]i|rezervi[sš]i|akcija|novo)\W*$", re.I)
+
+
+def _is_label(text: str) -> bool:
+    return bool(BUTTON_TEXT.match(text.strip())) or len(text.strip()) < 6
 TITLE_KEYS = ("name", "title", "naziv", "productName", "product_name", "label")
 PRICE_KEYS = ("price", "salePrice", "sale_price", "finalPrice", "final_price", "special_price", "cijena",
               "akcijska_cijena", "current_price", "priceWithVat", "price_with_vat", "amount", "value", "display_price")
@@ -270,12 +276,17 @@ def _card_product(card: Tag, base: str) -> Product | None:
         if linked and len(_clean(heading.get_text(" "))) >= 6:
             title = _clean(heading.get_text(" "))
             break
-    hinted = None if title else card.find(lambda t: isinstance(t, Tag) and t.name in ("h1", "h2", "h3", "h4", "h5", "a", "div", "span", "p")
-                       and TITLE_HINT.search(" ".join(t.get("class") or []) + " " + (t.get("itemprop") or "")))
-    if hinted is not None:
-        title = _clean(hinted.get_text(" "))
+    if not title:
+        for hinted in card.find_all(lambda t: isinstance(t, Tag) and t.name in ("h1", "h2", "h3", "h4", "h5", "a", "div", "span", "p")
+                                    and TITLE_HINT.search(" ".join(t.get("class") or []) + " " + (t.get("itemprop") or ""))):
+            txt = _clean(hinted.get_text(" ")) or _clean(hinted.get("title", ""))
+            if not _is_label(txt) and len(txt) <= 300:
+                title = txt
+                break
     if len(title) < 6:
-        title = max((_clean(a.get_text(" ")) for a in links), key=len, default="")
+        title = max((_clean(a.get_text(" ")) for a in links if not _is_label(_clean(a.get_text(" ")))), key=len, default="")
+    if len(title) < 6:
+        title = next((_clean(a.get("title", "")) for a in links if not _is_label(_clean(a.get("title", "")))), "")
     if len(title) < 6 and card.find("img"):
         title = _clean(card.find("img").get("alt", ""))
     if len(title) < 6 or len(title) > 300 or find_prices(title) and len(title) < 25:
