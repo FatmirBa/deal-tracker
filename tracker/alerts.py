@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import html
 import os
+import time
 from pathlib import Path
 
 import requests
@@ -24,12 +25,11 @@ def _chat_id(token: str) -> str | None:
     saved = load_json(CHAT, {})
     if saved.get("chat_id"):
         return str(saved["chat_id"])
-    try:
-        me = requests.get(API.format(token=token, method="getMe"), timeout=20).json()
-        r = requests.get(API.format(token=token, method="getUpdates"), timeout=20).json()
-    except requests.RequestException as e:
-        print(f"Telegram: network error {type(e).__name__}")
+    me = _tg(token, "getMe")
+    if str(me.get("description", "")).startswith("network error"):
+        print(f"Telegram: {me['description']}")
         return None
+    r = _tg(token, "getUpdates")
     if not me.get("ok"):
         print(f"Telegram: token rejected ({me.get('error_code')} {me.get('description')}). Re-copy the full token into TELEGRAM_TOKEN.")
         print(f"Telegram: saved token shape: {token_shape(os.environ.get('TELEGRAM_TOKEN', ''))}. A valid one is 8-10 digits, a colon, then 35 characters.")
@@ -45,6 +45,20 @@ def _chat_id(token: str) -> str | None:
             save_json(CHAT, {"chat_id": chat["id"]})
             return str(chat["id"])
     return None
+
+
+def _tg(token: str, method: str, data: dict | None = None) -> dict:
+    """Call the Telegram API with retries; returns the JSON reply or {'ok': False, 'description': ...}."""
+    last = ""
+    for attempt in range(4):
+        try:
+            url = API.format(token=token, method=method)
+            r = requests.post(url, data=data, timeout=35) if data else requests.get(url, timeout=35)
+            return r.json()
+        except (requests.RequestException, ValueError) as e:
+            last = type(e).__name__
+            time.sleep(3 * (attempt + 1))
+    return {"ok": False, "description": f"network error {last} after 4 tries"}
 
 
 def token_shape(raw: str) -> str:
@@ -64,9 +78,10 @@ def send(text: str) -> bool:
     if not chat:
         print("Telegram: no chat yet. Send /start to your bot.")
         return False
-    r = requests.post(API.format(token=token, method="sendMessage"), timeout=20, data={
-        "chat_id": chat, "text": text, "parse_mode": "HTML", "disable_web_page_preview": "true"})
-    return r.ok
+    r = _tg(token, "sendMessage", {"chat_id": chat, "text": text, "parse_mode": "HTML", "disable_web_page_preview": "true"})
+    if not r.get("ok"):
+        print(f"Telegram: sendMessage failed ({r.get('error_code')} {r.get('description')})")
+    return bool(r.get("ok"))
 
 
 def pick_alerts(products: list[dict], items: dict, shops: dict) -> list[tuple[str, dict]]:
