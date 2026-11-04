@@ -17,7 +17,7 @@ from urllib.parse import urljoin
 
 from bs4 import BeautifulSoup, Tag
 
-from .prices import find_prices, parse_number
+from .prices import clean_title, find_prices, parse_number
 
 OLD_HINT = re.compile(r"old|regular|stara|before|was|prev|line-through|strike|crossed|precrt|redovn|mpc", re.I)
 NEW_HINT = re.compile(r"\b(new|sale|special|akcij|current|final|actual|discount|price--now|now)\b", re.I)
@@ -28,7 +28,7 @@ PRICE_KEYS = ("price", "salePrice", "sale_price", "finalPrice", "final_price", "
 OLD_KEYS = ("regularPrice", "regular_price", "oldPrice", "old_price", "listPrice", "list_price", "originalPrice",
             "original_price", "stara_cijena", "price_before", "priceBefore", "mpc")
 URL_KEYS = ("url", "link", "href", "permalink", "slug", "path", "canonical_url", "productUrl")
-IMG_KEYS = ("image", "img", "thumbnail", "imageUrl", "image_url", "picture", "photo", "thumb")
+IMG_KEYS = ("image", "img", "thumbnail", "imageUrl", "image_url", "picture", "photo", "thumb", "cover", "default_image", "images")
 
 
 @dataclass
@@ -102,7 +102,7 @@ def from_selectors(soup: BeautifulSoup, base: str, sel: dict) -> list[Product]:
             old = ops[0] if ops and ops[0] else None
         if title and url and prices:
             price = min(prices) if not p_el else prices[0]
-            out.append(Product(title, price, url, old if old and old > price else None, _img(card, base), "selectors"))
+            out.append(Product(clean_title(title), price, url, old if old and old > price else None, _img(card, base), "selectors"))
     return out
 
 
@@ -137,7 +137,7 @@ def from_jsonld(soup: BeautifulSoup, base: str) -> list[Product]:
             if isinstance(img, dict):
                 img = img.get("url")
             if title and price and url:
-                out.append(Product(title, price, url, None, _abs(base, img) if isinstance(img, str) else None, "jsonld"))
+                out.append(Product(clean_title(title), price, url, None, _abs(base, img) if isinstance(img, str) else None, "jsonld"))
 
     for s in soup.find_all("script", type=re.compile("ld\\+json", re.I)):
         try:
@@ -148,6 +148,23 @@ def from_jsonld(soup: BeautifulSoup, base: str) -> list[Product]:
 
 
 # ---------------------------------------------------------------- 3. embedded state / JSON APIs
+IMG_EXT = re.compile(r"\.(jpe?g|png|webp|avif)(\?|$)", re.I)
+
+
+def _first_image(obj, depth=0):
+    """First image URL anywhere inside a nested dict/list (e.g. PrestaShop's cover.bySize.medium.url)."""
+    if depth > 5:
+        return None
+    if isinstance(obj, str):
+        return obj if IMG_EXT.search(obj) else None
+    items = obj.values() if isinstance(obj, dict) else obj if isinstance(obj, list) else []
+    for v in items:
+        r = _first_image(v, depth + 1)
+        if r:
+            return r
+    return None
+
+
 def _walk_products(obj, base: str, url_template: str | None, found: list, depth=0):
     if depth > 14:
         return
@@ -166,16 +183,16 @@ def _walk_products(obj, base: str, url_template: str | None, found: list, depth=
                 break
     if title and price:
         url = None
-        for k in URL_KEYS:
-            v = obj.get(k)
-            if isinstance(v, str) and v:
-                url = _abs(base, v if v.startswith(("http", "/")) else "/" + v)
-                break
-        if not url and url_template:
+        if url_template:
             try:
                 url = url_template.format(**{k: v for k, v in obj.items() if isinstance(v, (str, int))})
             except (KeyError, IndexError):
                 url = None
+        for k in ([] if url else URL_KEYS):
+            v = obj.get(k)
+            if isinstance(v, str) and v:
+                url = _abs(base, v if v.startswith(("http", "/")) else "/" + v)
+                break
         old = next((_num(obj[k]) for k in OLD_KEYS if k in obj and _num(obj[k])), None)
         img = None
         for k in IMG_KEYS:
@@ -183,12 +200,12 @@ def _walk_products(obj, base: str, url_template: str | None, found: list, depth=
             if isinstance(v, list) and v:
                 v = v[0]
             if isinstance(v, dict):
-                v = v.get("url") or v.get("src")
-            if isinstance(v, str) and v:
+                v = _first_image(v)
+            if isinstance(v, str) and v and not v.startswith("data:"):
                 img = _abs(base, v)
                 break
         if url:
-            found.append(Product(_clean(title), price, url, old if old and old > price else None, img, "embedded"))
+            found.append(Product(clean_title(_clean(title)), price, url, old if old and old > price else None, img, "embedded"))
     for v in obj.values():
         if isinstance(v, (dict, list)):
             _walk_products(v, base, url_template, found, depth + 1)
@@ -238,13 +255,18 @@ def _card_product(card: Tag, base: str) -> Product | None:
     if not prices:
         return None
     links = [a for a in card.find_all("a", href=True) if _abs(base, a["href"])]
+    if card.name == "a" and card.get("href") and _abs(base, card["href"]):
+        links = [card] + links  # the whole card is one link (e.g. Technoshop)
     if not links:
         return None
     # title: an element hinting "title/name", else the longest link text, else image alt
     title = ""
-    hinted = card.find(lambda t: isinstance(t, Tag) and t.name in ("h1", "h2", "h3", "h4", "h5", "a", "div", "span", "p")
+    heading = card.find(["h2", "h3", "h4", "h5"])
+    if heading and len(_clean(heading.get_text(" "))) >= 6:
+        title = _clean(heading.get_text(" "))
+    hinted = None if title else card.find(lambda t: isinstance(t, Tag) and t.name in ("h1", "h2", "h3", "h4", "h5", "a", "div", "span", "p")
                        and TITLE_HINT.search(" ".join(t.get("class") or []) + " " + (t.get("itemprop") or "")))
-    if hinted:
+    if hinted is not None:
         title = _clean(hinted.get_text(" "))
     if len(title) < 6:
         title = max((_clean(a.get_text(" ")) for a in links), key=len, default="")
@@ -252,7 +274,7 @@ def _card_product(card: Tag, base: str) -> Product | None:
         title = _clean(card.find("img").get("alt", ""))
     if len(title) < 6 or len(title) > 300 or find_prices(title) and len(title) < 25:
         return None
-    link = next((a for a in links if _clean(a.get_text(" ")) == title), None) or links[0]
+    link = next((a for a in links if title and title in _clean(a.get_text(" "))), None) or links[0]
     url = _abs(base, link["href"])
 
     old = None
@@ -261,18 +283,11 @@ def _card_product(card: Tag, base: str) -> Product | None:
         if ps:
             old = max(ps)
             break
-    price = None
-    for el in card.find_all(class_=NEW_HINT):
-        ps = find_prices(el.get_text(" "))
-        if ps:
-            price = min(ps)
-            break
-    if price is None:
-        cand = [p for p in prices if old is None or p < old] or prices
-        price = min(cand)
+    cand = [p for p in prices if old is None or p < old] or prices
+    price = min(cand)
     if old is None and len(set(prices)) >= 2 and max(prices) > price * 1.02:
         old = max(prices)
-    return Product(title, price, url, old if old and old > price * 1.005 else None, _img(card, base), "cards")
+    return Product(clean_title(title), price, url, old if old and old > price * 1.005 else None, _img(card, base), "cards")
 
 
 def from_cards(soup: BeautifulSoup, base: str) -> list[Product]:

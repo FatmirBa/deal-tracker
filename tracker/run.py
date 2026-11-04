@@ -37,10 +37,11 @@ def load_config():
     return shops_cfg, watch
 
 
-def accepts(title: str, price: float, item: dict, common_exclude: list[str], marketplace: bool) -> bool:
+def accepts(title: str, price: float, item: dict, common_exclude: list[str], marketplace: bool, trusted: bool = False) -> bool:
+    """trusted=True for a shop's own category page: skip the keyword check, keep accessory and price filters."""
     t = norm(title)
     must = [norm(m) for m in item.get("must_any") or []]
-    if must and not any(m in t for m in must):
+    if must and not trusted and not any(m in t for m in must):
         return False
     if item.get("match_all_words"):
         words = [w for w in norm(item["queries"][0]).split() if len(w) >= 3]
@@ -80,7 +81,8 @@ def crawl(shops_cfg, watch, only_shop=None):
                 d.update(at=now.isoformat(), render=render)
                 disc[sid] = {k: d.get(k) for k in ("search", "count", "method", "render", "at", "home_status", "error")}
                 template = d["search"]
-            if not template:
+            pages = shop.get("pages") or {}
+            if not template and not pages:
                 st["note"] = "search page not found yet"
                 status[sid] = st
                 print(f"[{sid}] skipped: no search page found", flush=True)
@@ -90,8 +92,13 @@ def crawl(shops_cfg, watch, only_shop=None):
                 item_kinds = set(item.get("kinds") or ["everything"])
                 if not (kinds & item_kinds or "everything" in kinds):
                     continue
-                for q in item["queries"]:
-                    url = template.replace("{q}", quote_plus(q))
+                if item["id"] in pages:
+                    targets = [(u, True) for u in pages[item["id"]]]
+                elif template:
+                    targets = [(template.replace("{q}", quote_plus(q)), False) for q in item["queries"]]
+                else:
+                    continue
+                for url, trusted in targets:
                     code, final, text = f.get(url, render=render)
                     st["requests"] += 1
                     if code == 0 or code >= 400:
@@ -100,7 +107,7 @@ def crawl(shops_cfg, watch, only_shop=None):
                     prods, rep = extract(text, final, shop.get("selectors"), shop.get("url_template"))
                     st["method"] = st["method"] or rep.get("used")
                     for p in prods:
-                        if not accepts(p.title, p.price, item, common_ex, bool(shop.get("marketplace"))):
+                        if not accepts(p.title, p.price, item, common_ex, bool(shop.get("marketplace")), trusted):
                             continue
                         k = key_for(p.url)
                         if k in found:

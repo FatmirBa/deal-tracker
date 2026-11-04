@@ -7,10 +7,10 @@ import unicodedata
 # 1.299,00 KM | 1 299,00 KM | 1299 KM | KM 1.299,00 | 849,90KM | 1.299 BAM | 1,299.00 KM
 _NUM = r"(\d{1,3}(?:[.\s  ]\d{3})+(?:[.,]\d{1,2})?|\d+(?:[.,]\d{1,2})?)"
 PRICE_RE = re.compile(
-    rf"(?:{_NUM}\s*(?:KM|BAM|kn|K\.M\.)\b)|(?:\b(?:KM|BAM)\s*{_NUM})", re.IGNORECASE
+    rf"(?:{_NUM}(?:,-{{1,2}})?\s*(?:KM|BAM|kn|K\.M\.)(?![a-zA-Z]))|(?:\b(?:KM|BAM)\s*{_NUM})", re.IGNORECASE
 )
 # installment / per-month prices that must never be read as the product price
-INSTALL_BEFORE = re.compile(r"(\brat[ae]?\b|\brata:|na\s*\d+\s*rata|\d+\s*x\s*$|mjese[cč]na|mese[cč]na)[^\d]{0,12}$", re.I)
+INSTALL_BEFORE = re.compile(r"(\brat[ae]?\b|\brata:|na\s*\d+\s*rata|\d+\s*x\s*$|mjese[cč]na|mese[cč]na|u[sš]ted[aie]\w*|popust\w*|save[sd]?|you save|dostava|po[sš]tarina)[^\d]{0,14}$", re.I)
 INSTALL_AFTER = re.compile(r"^\s*(/\s*mj|mjese[cč]no|mese[cč]no|mj\.|x\s*\d+)", re.I)
 
 
@@ -89,3 +89,17 @@ def model_code(title: str) -> str | None:
     if not cands:
         return None
     return max(cands, key=len).replace("/", "")
+
+
+_SPEC_CUT = re.compile(r"\s(?:Boja|Brend i model proizvoda|Dimenzije(?: proizvoda)?|Dodatne karakteristike|Broj obrtaja|Broj programa|"
+                       r"Audio|Energetski razred|Kapacitet|Garancija)\s*:.*$", re.I)
+
+
+def clean_title(title: str) -> str:
+    """Drop shop noise from a product title: spec lists, hashtags, embedded prices, 'Akcija' prefixes."""
+    t = re.sub(r"#\S+", " ", title or "")
+    t = _SPEC_CUT.sub("", t)
+    t = PRICE_RE.sub(" ", t)
+    t = re.sub(r"^\s*(akcija|novo|sni[zž]eno|top ponuda)\s*[:!-]?\s+", "", t, flags=re.I)
+    t = re.sub(r"\s+", " ", t).strip(" -–|,;:")
+    return t or (title or "").strip()

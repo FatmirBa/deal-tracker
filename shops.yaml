@@ -11,52 +11,66 @@ shops:
   - id: domod
     name: Domod
     home: https://www.domod.ba
+    search: https://domod.ba/pretraga?keywords={q}
     kinds: [appliances, furniture]
 
   - id: imtec
     name: Imtec
     home: https://www.imtec.ba
+    search: https://imtec.ba/trazi?controller=search&s={q}
     kinds: [appliances]
 
   - id: technoshop
     name: Technoshop
     home: https://www.technoshop.ba
+    search: https://technoshop.ba/?s={q}&post_type=product
     kinds: [appliances]
+    pages:   # category pages list everything; the site's search is unreliable
+      washer: [https://technoshop.ba/proizvodi/bijela-tehnika/ves-masine-i-susilice/ves-masine,
+               https://technoshop.ba/proizvodi/bijela-tehnika/ves-masine-i-susilice/masine-za-pranje-i-susenje]
+      dryer: [https://technoshop.ba/proizvodi/bijela-tehnika/ves-masine-i-susilice/susilice]
+      dishwasher: [https://technoshop.ba/proizvodi/bijela-tehnika/pranje-posuda/samostojece-masine-za-sude,
+                   https://technoshop.ba/proizvodi/bijela-tehnika/pranje-posuda/ugradbene-masine-za-sude]
+      fridge: [https://technoshop.ba/proizvodi/bijela-tehnika/frizideri-i-zamrzivaci/kombinovani-frizideri,
+               https://technoshop.ba/proizvodi/bijela-tehnika/frizideri-i-zamrzivaci/frizideri]
+      tv: [https://technoshop.ba/proizvodi/tv-i-audio/tv]
 
   - id: tehnodepo
     name: Tehnodepo
     home: https://www.tehnodepo.ba
+    search: https://tehnodepo.ba/shop?q={q}
     kinds: [appliances]
+    pages:
+      washer: [https://tehnodepo.ba/shop/bijela-tehnika/masine-za-pranje-vesa,
+               https://tehnodepo.ba/shop/bijela-tehnika/masine-za-pranje-i-susenje-vesa]
+      dryer: [https://tehnodepo.ba/shop/bijela-tehnika/masine-za-susenje-vesa]
+      dishwasher: [https://tehnodepo.ba/shop/bijela-tehnika/masine-za-sude,
+                   https://tehnodepo.ba/shop/ugradbena-tehnika/ugradbene-masine-za-sude]
+      fridge: [https://tehnodepo.ba/shop/bijela-tehnika/frizideri]
+      tv: [https://tehnodepo.ba/shop/televizori]
 
   - id: topizbor
     name: Topizbor
     home: https://www.topizbor.ba
     kinds: [appliances]
+    pages:   # site search is JavaScript-only; category pages work
+      washer: [https://topizbor.ba/masine-za-ves/masine-za-pranje-vesa, https://topizbor.ba/masine-za-ves/kombinovane-masine-za-ves]
+      dryer: [https://topizbor.ba/masine-za-ves/masine-za-susenje-vesa]
+      dishwasher: [https://topizbor.ba/masine-za-pranje-posudja/samostojece-masine-za-sudje,
+                   https://topizbor.ba/masine-za-pranje-posudja/ugradbene-masine-za-sudje]
+      fridge: [https://topizbor.ba/rashladni-aparati/frizideri-sa-zamrzivacem, https://topizbor.ba/rashladni-aparati/frizideri]
+      tv: [https://topizbor.ba/televizori]
 
   - id: ekupi
     name: eKupi
     home: https://www.ekupi.ba
+    search: https://www.ekupi.ba/bs/search/?text={q}
     kinds: [appliances, furniture, everything]
-
-  - id: emmezeta
-    name: Emmezeta
-    home: https://www.emmezeta.ba
-    kinds: [appliances, furniture, everything]
-
-  - id: jysk
-    name: JYSK
-    home: https://jysk.ba
-    kinds: [furniture]
-
-  - id: formaideale
-    name: Forma Ideale
-    home: https://www.formaideale.ba
-    kinds: [furniture]
 
   - id: olx
     name: OLX.ba
     home: https://olx.ba
-    search: https://olx.ba/pretraga?q={q}
+    search: https://olx.ba/api/search?q={q}
     kinds: [appliances, furniture, everything]
     marketplace: true      # private sellers too: prices can be "po dogovoru", used items
     url_template: https://olx.ba/artikal/{id}
@@ -64,8 +78,11 @@ shops:
 
 # Extra candidates the probe checks; promote any that work into the list above.
 candidates:
+  - https://jysk.ba              # search is built by JavaScript; needs category pages
+  - https://emmezeta.ba
+  - https://formaideale.ba
+  - https://tehnomag.com
   - https://www.winwin.ba
-  - https://www.tehnomag.ba
   - https://www.bingotehnika.ba
   - https://www.mall.ba
   - https://www.lesnina.ba
