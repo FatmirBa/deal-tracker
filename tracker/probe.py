@@ -136,7 +136,7 @@ def probe_targets(out: Path, path: Path):
     (out / "TARGETS.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
-DIM_WORDS = re.compile(r"dimenz|du[zž]in|[sš]irin|visin|dubin|gabarit|veli[cč]in|\\b\\d{2,3}\\s*[x×]\\s*\\d{2,3}|\\b(width|depth|height)\\b", re.I)
+DIM_WORDS = re.compile(r"dimenz|du[zž]in|[sš]irin|visin|dubin|gabarit|veli[cč]in|\b\d{2,3}\s*[x×]\s*\d{2,3}|\b(width|depth|height)\b", re.I)
 
 
 def page_facts(html: str) -> dict:
@@ -219,7 +219,7 @@ def probe_catalog(out: Path):
                 for kind, pat in EXTRA_KINDS.items():
                     if pat.search(text):
                         depth = urlparse(href).path.strip("/").count("/")
-                        prod = bool(re.search(r"/(proizvod|product|artikal|p)/|\\d{4,}", href))
+                        prod = bool(re.search(r"/(proizvod|product|artikal|p)/|\d{4,}", href))
                         cand[kind].append((depth + (10 if prod else 0), href))
             links = {k: list(dict.fromkeys(h for _, h in sorted(v)))[:3] for k, v in cand.items() if v}
             report[shop["id"]] = {"links": links, "pages": {}}
