@@ -7,4 +7,4 @@
 [olx] 191 products from 14 searches (0 errors) via embedded
 Telegram: token rejected (401 Unauthorized). Re-copy the full token into TELEGRAM_TOKEN.
 Telegram: no chat yet. Send /start to your bot.
-Done: 909 products from 7/7 shops in 148s
+Done: 909 products from 7/7 shops in 137s
