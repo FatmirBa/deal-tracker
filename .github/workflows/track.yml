@@ -37,6 +37,12 @@ jobs:
       - run: pip install -r requirements.txt
       - name: Install headless browser (for shops that need JavaScript)
         run: python -m playwright install --with-deps chromium
+      - name: Restore private alert state (Telegram chat id)
+        uses: actions/cache/restore@v4
+        with:
+          path: .state
+          key: alert-state-${{ github.run_id }}
+          restore-keys: alert-state-
       - name: Check prices
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
@@ -47,6 +53,12 @@ jobs:
           set -o pipefail
           mkdir -p data
           python -m tracker.run ${SHOP:+--shop "$SHOP"} 2>&1 | tee data/last_run.txt
+      - name: Keep private alert state
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: .state
+          key: alert-state-${{ github.run_id }}
       - name: Save prices
         run: |
           git config user.name "deal-tracker-bot"

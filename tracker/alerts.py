@@ -14,7 +14,7 @@ import requests
 from .store import load_json, save_json
 
 STATE = Path("data/alerted.json")
-CHAT = Path("data/telegram.json")
+CHAT = Path(".state/telegram.json")  # kept in the private Actions cache, never committed (the repo is public)
 API = "https://api.telegram.org/bot{token}/{method}"
 
 
