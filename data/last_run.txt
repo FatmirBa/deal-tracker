@@ -5,5 +5,5 @@
 [topizbor] 87 products from 8 searches (0 errors) via cards
 [ekupi] 161 products from 14 searches (0 errors) via cards
 [olx] 187 products from 14 searches (0 errors) via embedded
-Alerts: no Telegram or ntfy secret set yet, skipping (nothing is marked as sent).
-Done: 905 products from 7/7 shops in 150s
+Telegram: no chat yet. Send /start to your bot.
+Done: 905 products from 7/7 shops in 138s
