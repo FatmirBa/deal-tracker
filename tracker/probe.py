@@ -136,13 +136,123 @@ def probe_targets(out: Path, path: Path):
     (out / "TARGETS.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
+DIM_WORDS = re.compile(r"dimenz|du[zž]in|[sš]irin|visin|dubin|gabarit|veli[cč]in|\\b\\d{2,3}\\s*[x×]\\s*\\d{2,3}|\\b(width|depth|height)\\b", re.I)
+
+
+def page_facts(html: str) -> dict:
+    """Title plus every line that talks about size (and the two lines after it, which hold the value in spec tables)."""
+    from bs4 import BeautifulSoup
+    soup = BeautifulSoup(html, "lxml")
+    for t in soup(["script", "style", "noscript", "nav", "footer", "header", "svg"]):
+        t.decompose()
+    title = (soup.find("h1").get_text(" ", strip=True) if soup.find("h1") else (soup.title.get_text(strip=True) if soup.title else ""))
+    lines = [re.sub(r"\s+", " ", l).strip() for l in soup.get_text("\n").split("\n")]
+    lines = [l for l in lines if l]
+    snips, seen = [], set()
+    for i, l in enumerate(lines):
+        if len(l) > 400 or not DIM_WORDS.search(l):
+            continue
+        snip = " | ".join(lines[i:i + 3])[:260]
+        if snip not in seen:
+            seen.add(snip)
+            snips.append(snip)
+        if len(snips) >= 14:
+            break
+    return {"title": title[:120], "dims": snips}
+
+
+def probe_details(out: Path, path: Path, budget_s: int = 1500):
+    """Open product pages listed in a YAML file ({urls: [{u, s, i}]}) and keep only the size information."""
+    import time
+    out.mkdir(parents=True, exist_ok=True)
+    cfg = yaml.safe_load(Path("shops.yaml").read_text(encoding="utf-8"))
+    render = {s["id"]: bool(s.get("render")) for s in cfg["shops"]}
+    todo = yaml.safe_load(path.read_text(encoding="utf-8"))["urls"]
+    f = Fetcher(delay=0.8)
+    res, t0 = {}, time.time()
+    try:
+        for n, row in enumerate(todo):
+            if time.time() - t0 > budget_s:
+                print("time budget reached after", n, "pages", flush=True)
+                break
+            code, final, text = f.get(row["u"], render=render.get(row["s"], False))
+            facts = page_facts(text) if code and code < 400 else {"title": "", "dims": []}
+            res[row["u"]] = {"s": row["s"], "i": row["i"], "status": code, **facts}
+            if n % 25 == 0:
+                print(n, row["u"], code, len(facts["dims"]), flush=True)
+    finally:
+        f.close()
+        (out / "details.json").write_text(json.dumps(res, ensure_ascii=False, indent=1), encoding="utf-8")
+
+
+EXTRA_KINDS = {
+    "komoda": re.compile(r"komod|tv[\s-]*(element|stalak|komod)|tv-regal", re.I),
+    "table": re.compile(r"trpezar|blagovaon|stolovi|jelaonic", re.I),
+}
+
+
+def probe_catalog(out: Path):
+    """For every furniture shop: find the TV-unit and dining-table category pages and list what is on them (title, price)."""
+    from urllib.parse import urljoin, urlparse
+    from bs4 import BeautifulSoup
+    out.mkdir(parents=True, exist_ok=True)
+    cfg = yaml.safe_load(Path("shops.yaml").read_text(encoding="utf-8"))
+    f = Fetcher(delay=1.0)
+    report, md = {}, []
+    try:
+        for shop in cfg["shops"]:
+            if "furniture" not in (shop.get("kinds") or []) or shop.get("marketplace"):
+                continue
+            rend = bool(shop.get("render"))
+            code, final, html = f.get(shop["home"], render=rend)
+            if code == 0 or code >= 400:
+                md.append(f"## {shop['id']}: home HTTP {code}")
+                continue
+            soup = BeautifulSoup(html, "lxml")
+            host = urlparse(final).netloc
+            cand = {k: [] for k in EXTRA_KINDS}
+            for a in soup.find_all("a", href=True):
+                href = urljoin(final, a["href"]).split("#")[0]
+                if urlparse(href).netloc != host:
+                    continue
+                text = (a.get_text(" ") or "") + " " + href
+                for kind, pat in EXTRA_KINDS.items():
+                    if pat.search(text):
+                        depth = urlparse(href).path.strip("/").count("/")
+                        prod = bool(re.search(r"/(proizvod|product|artikal|p)/|\\d{4,}", href))
+                        cand[kind].append((depth + (10 if prod else 0), href))
+            links = {k: list(dict.fromkeys(h for _, h in sorted(v)))[:3] for k, v in cand.items() if v}
+            report[shop["id"]] = {"links": links, "pages": {}}
+            md.append(f"## {shop['id']} category links: {links}")
+            for kind, urls in links.items():
+                for u in urls[:2]:
+                    code, final2, text = f.get(u, render=rend)
+                    prods, rep = ([], {}) if code == 0 or code >= 400 else extract(text, final2, shop.get("selectors"), shop.get("url_template"))
+                    report[shop["id"]]["pages"][u] = [{"t": p.title[:90], "p": p.price, "o": p.old_price, "u": p.url} for p in prods]
+                    md.append(f"### {shop['id']} / {kind}: {u} (HTTP {code}, {len(prods)} products)")
+                    md += [f"- {p.price} {p.title[:80]} {p.url}" for p in prods[:40]]
+            print("\n".join(md[-3:]), flush=True)
+    finally:
+        f.close()
+        (out / "catalog.json").write_text(json.dumps(report, ensure_ascii=False, indent=1), encoding="utf-8")
+        (out / "CATALOG.md").write_text("\n".join(md) + "\n", encoding="utf-8")
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default="probe")
     ap.add_argument("--render", action="store_true", help="also try headless Chromium for shops that fail")
     ap.add_argument("--pages", action="store_true", help="only fetch each shop's configured category pages and save them")
     ap.add_argument("--targets", help="YAML file of candidate shops with listing URLs to test")
+    ap.add_argument("--details", help="YAML file with product page URLs: save only their size information")
+    ap.add_argument("--catalog", action="store_true", help="find TV-unit and dining-table category pages in every furniture shop")
     args = ap.parse_args(argv)
+    if args.details or args.catalog:
+        if args.catalog:
+            probe_catalog(Path(args.out))
+        if args.details:
+            probe_details(Path(args.out), Path(args.details))
+        return
     if args.pages:
         return probe_pages(Path(args.out))
     if args.targets:

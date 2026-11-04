@@ -26,9 +26,11 @@ jobs:
           cache: pip
       - run: pip install -r requirements.txt && python -m playwright install --with-deps chromium
       - env:
-          MODE: ${{ inputs.mode || 'full' }}
+          MODE: ${{ inputs.mode }}
         run: |
-          if [ "$MODE" = "pages" ]; then ARGS="--pages"; elif [ "$MODE" = "targets" ]; then ARGS="--targets probe_targets.yaml"; else ARGS="--render"; fi
+          # a push to probe.request can pick the mode with a first line like "mode: details"
+          if [ -z "$MODE" ]; then MODE=$(grep -m1 -oP '^mode:\s*\K\w+' probe.request || echo full); fi
+          if [ "$MODE" = "details" ]; then ARGS="--catalog --details details_urls.yaml"; elif [ "$MODE" = "pages" ]; then ARGS="--pages"; elif [ "$MODE" = "targets" ]; then ARGS="--targets probe_targets.yaml"; else ARGS="--render"; fi
           python -m tracker.probe --out /tmp/probe $ARGS 2>&1 | tee /tmp/probe-log.txt
       - name: Publish results to the probe branch
         run: |
