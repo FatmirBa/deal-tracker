@@ -159,6 +159,10 @@ def publish(found, status, shops_cfg, watch, first_run: bool):
 
     repo = os.environ.get("GITHUB_REPOSITORY", "")
     app_url = f"https://{repo.split('/')[0]}.github.io/{repo.split('/')[1]}/" if "/" in repo else ""
+    if not (os.environ.get("TELEGRAM_TOKEN") or os.environ.get("NTFY_TOPIC")):
+        print("Alerts: no Telegram or ntfy secret set yet, skipping (nothing is marked as sent).")
+        return data
+    first_run = not alerts.STATE.exists()  # first time alerts go out: send a welcome with today's best picks
     picks = alerts.pick_alerts(products, items, shops)
     msg = alerts.format_message(picks, items, shops, app_url, first_run, len(products))
     if msg and alerts.send(msg):

@@ -64,6 +64,7 @@ def test_pipeline(tmp_path, monkeypatch):
     monkeypatch.setattr(run.alerts, "send", lambda m: sent.append(m) or True)
     pushed = []
     monkeypatch.setenv("NTFY_TOPIC", "test-topic")
+    monkeypatch.setenv("TELEGRAM_TOKEN", "test-token")
     monkeypatch.setattr(run.alerts.requests, "post", lambda url, data=None, headers=None, timeout=None: pushed.append((url, headers, data)) or type("R", (), {"ok": True})())
     assert run.main([]) == 0
     data = json.loads(Path("docs/data/products.json").read_text())
@@ -76,7 +77,7 @@ def test_pipeline(tmp_path, monkeypatch):
     assert titles["Ugaona garnitura Rio siva"]["i"] == "sofa" and titles["Ugaona garnitura Rio siva"]["s"] == "jysk"
     assert any(p["s"] == "olx" and p["p"] == 220 for p in data["products"])
     assert json.loads(Path("data/discovered.json").read_text())["domod"]["search"] == "https://domod.test/pretraga?q={q}"
-    assert sent and "Real drop −17%, under your 600 KM target" in sent[0] and "WNEI84APS" in sent[0] and "olx.test" not in sent[0]
+    assert sent and "Deal tracker is live" in sent[0] and "Real drop −17%, under your 600 KM target" in sent[0] and "WNEI84APS" in sent[0] and "olx.test" not in sent[0]
     assert any(h.get("Click") == "https://domod.test/p/gorenje-wnei84aps" and b"579 KM" in d for _, h, d in pushed), pushed
     # second run same prices: no repeat alerts
     sent.clear(); run.main([])
