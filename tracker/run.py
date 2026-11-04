@@ -165,12 +165,17 @@ def publish(found, status, shops_cfg, watch, first_run: bool):
     first_run = not alerts.STATE.exists()  # first time alerts go out: send a welcome with today's best picks
     picks = alerts.pick_alerts(products, items, shops)
     msg = alerts.format_message(picks, items, shops, app_url, first_run, len(products))
+    delivered = False
     if msg and alerts.send(msg):
         print(f"Telegram: sent {len(picks)} alerts")
+        delivered = True
     if picks or first_run:
         n = alerts.send_ntfy(picks, items, shops, app_url, first_run, len(products))
         if n:
             print(f"ntfy: sent {n} notifications")
+            delivered = True
+    if delivered:
+        alerts.mark_sent(picks)
     return data
 
 

@@ -66,10 +66,15 @@ def pick_alerts(products: list[dict], items: dict, shops: dict) -> list[tuple[st
         if deal or under:
             picks.append(("deal+target" if deal and under else "deal" if deal else "target", p))
     picks.sort(key=lambda x: ("deal" not in x[0], x[1]["p"]))
+    return picks
+
+
+def mark_sent(picks):
+    """Remember what was sent, only after a message actually reached the phone."""
+    state = load_json(STATE, {})
     for _, p in picks:
         state[p["k"]] = p["p"]
     save_json(STATE, state)
-    return picks
 
 
 def format_message(picks, items, shops, app_url: str, first_run: bool, total: int) -> str | None:
