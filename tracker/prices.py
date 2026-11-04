@@ -5,7 +5,7 @@ import re
 import unicodedata
 
 # 1.299,00 KM | 1 299,00 KM | 1299 KM | KM 1.299,00 | 849,90KM | 1.299 BAM | 1,299.00 KM
-_NUM = r"(\d{1,3}(?:[.\s  ]\d{3})+(?:[.,]\d{1,2})?|\d+(?:[.,]\d{1,2})?)"
+_NUM = r"(\d{1,3}(?:[.,\s  ]\d{3})+(?:[.,]\d{1,2})?|\d+(?:[.,]\d{1,2})?)"
 PRICE_RE = re.compile(
     rf"(?:{_NUM}(?:,-{{1,2}})?\s*(?:KM|BAM|kn|K\.M\.)(?![a-zA-Z]))|(?:\b(?:KM|BAM)\s*{_NUM})", re.IGNORECASE
 )
@@ -48,6 +48,7 @@ def find_prices(text: str) -> list[float]:
     out: list[float] = []
     if not text:
         return out
+    text = re.sub(r"\s+", " ", text)  # HTML indentation must not push "Ušteda"/"rata" out of the look-back window
     for m in PRICE_RE.finditer(text):
         if INSTALL_BEFORE.search(text[max(0, m.start() - 22): m.start()]) or INSTALL_AFTER.search(text[m.end(): m.end() + 14]):
             continue

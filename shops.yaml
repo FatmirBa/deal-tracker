@@ -25,6 +25,7 @@ shops:
     home: https://www.technoshop.ba
     search: https://technoshop.ba/?s={q}&post_type=product
     kinds: [appliances]
+    render: true   # category listings are loaded by JavaScript
     pages:   # category pages list everything; the site's search is unreliable
       washer: [https://technoshop.ba/proizvodi/bijela-tehnika/ves-masine-i-susilice/ves-masine,
                https://technoshop.ba/proizvodi/bijela-tehnika/ves-masine-i-susilice/masine-za-pranje-i-susenje]

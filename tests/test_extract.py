@@ -59,3 +59,14 @@ def test_selectors():
     sel = {"card": "li.product", "title": "h2", "price": "ins .amount", "old_price": "del .amount"}
     prods, rep = extract(WOO, "https://domod.ba/", selectors=sel)
     assert rep["used"] == "selectors" and prods[2].price == 701.0 and prods[2].old_price == 901.0
+
+
+def test_real_shop_formats():
+    # Tehnodepo: English separators and a savings line
+    assert find_prices("1,417.00 KM\n   1,133.60 KM\n  Ušteda: 283.40 KM") == [1417.0, 1133.6]
+    # Topizbor: savings word separated from the amount by HTML indentation
+    assert find_prices("871,00\n                KM\n   Ušteda\n                        196,00 KM\n   675,00\n      KM") == [871.0, 675.0]
+    # Technoshop: ",-" prices
+    assert find_prices("2.079,- KM 1.999,- KM") == [2079.0, 1999.0]
+    # savings badge
+    assert find_prices("892 KM -251 KM 641 KM") == [892.0, 641.0]
