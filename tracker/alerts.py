@@ -25,9 +25,19 @@ def _chat_id(token: str) -> str | None:
     if saved.get("chat_id"):
         return str(saved["chat_id"])
     try:
+        me = requests.get(API.format(token=token, method="getMe"), timeout=20).json()
         r = requests.get(API.format(token=token, method="getUpdates"), timeout=20).json()
-    except requests.RequestException:
+    except requests.RequestException as e:
+        print(f"Telegram: network error {type(e).__name__}")
         return None
+    if not me.get("ok"):
+        print(f"Telegram: token rejected ({me.get('error_code')} {me.get('description')}). Re-copy the full token into TELEGRAM_TOKEN.")
+        return None
+    print(f"Telegram: token belongs to @{me['result'].get('username')}")
+    if not r.get("ok"):
+        print(f"Telegram: getUpdates failed ({r.get('error_code')} {r.get('description')})")
+        return None
+    print(f"Telegram: {len(r.get('result', []))} recent messages to the bot")
     for upd in reversed(r.get("result", [])):
         chat = (upd.get("message") or {}).get("chat") or {}
         if chat.get("type") == "private":
