@@ -7,15 +7,14 @@
 [fontele] 137 products from 12 searches (0 errors) via cards
 [genelec] 31 products from 2 searches (0 errors) via cards
 [procomp] 26 products from 2 searches (0 errors) via embedded
-[saga] 78 products from 7 searches (1 errors) via cards
+[saga] 39 products from 4 searches (1 errors) via cards
 [gama] 20 products from 3 searches (0 errors) via cards
 [jysk] 55 products from 3 searches (0 errors) via cards
 [ezam] 12 products from 2 searches (0 errors) via cards
-[domavija] 62 products from 6 searches (0 errors) via cards
+[domavija] 61 products from 6 searches (0 errors) via cards
 [domea] 69 products from 8 searches (0 errors) via cards
 [udobnost] 58 products from 5 searches (0 errors) via cards
 [laurel] 32 products from 4 searches (0 errors) via cards
 [dalusso] 16 products from 3 searches (0 errors) via cards
-[olx] 210 products from 17 searches (0 errors) via embedded
-Telegram: sent 1 alerts
-Done: 1525 products from 19/19 shops in 500s
+[olx] 209 products from 17 searches (0 errors) via embedded
+Done: 1484 products from 19/19 shops in 284s
