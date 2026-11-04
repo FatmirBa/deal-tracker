@@ -185,6 +185,36 @@ def probe_details(out: Path, path: Path, budget_s: int = 1500):
         (out / "details.json").write_text(json.dumps(res, ensure_ascii=False, indent=1), encoding="utf-8")
 
 
+def probe_chain(out: Path, path: Path, budget_s: int = 1500):
+    """List pages -> product pages -> size facts. Input: {lists: [{s, i, u, max}]}."""
+    import time
+    out.mkdir(parents=True, exist_ok=True)
+    cfg = yaml.safe_load(Path("shops.yaml").read_text(encoding="utf-8"))
+    shops = {s["id"]: s for s in cfg["shops"]}
+    lists = yaml.safe_load(path.read_text(encoding="utf-8"))["lists"]
+    f = Fetcher(delay=0.8)
+    res, t0 = [], time.time()
+    try:
+        for row in lists:
+            shop = shops.get(row["s"], {})
+            rend = bool(shop.get("render"))
+            code, final, text = f.get(row["u"], render=rend)
+            prods, rep = ([], {}) if code == 0 or code >= 400 else extract(text, final, shop.get("selectors"), shop.get("url_template"))
+            print(row["u"], code, len(prods), flush=True)
+            res.append({"s": row["s"], "i": row["i"], "list": row["u"], "status": code, "n": len(prods), "product": None})
+            seen = set()
+            for p in prods[: int(row.get("max", 20))]:
+                if p.url in seen or time.time() - t0 > budget_s:
+                    continue
+                seen.add(p.url)
+                c2, _, t2 = f.get(p.url, render=rend)
+                facts = page_facts(t2) if c2 and c2 < 400 else {"title": "", "dims": []}
+                res.append({"s": row["s"], "i": row["i"], "list": row["u"], "status": c2, "product": {"t": p.title[:90], "p": p.price, "o": p.old_price, "u": p.url}, **facts})
+    finally:
+        f.close()
+        (out / "chain.json").write_text(json.dumps(res, ensure_ascii=False, indent=1), encoding="utf-8")
+
+
 EXTRA_KINDS = {
     "komoda": re.compile(r"komod|tv[\s-]*(element|stalak|komod)|tv-regal", re.I),
     "table": re.compile(r"trpezar|blagovaon|stolovi|jelaonic", re.I),
@@ -245,8 +275,11 @@ def main(argv=None):
     ap.add_argument("--pages", action="store_true", help="only fetch each shop's configured category pages and save them")
     ap.add_argument("--targets", help="YAML file of candidate shops with listing URLs to test")
     ap.add_argument("--details", help="YAML file with product page URLs: save only their size information")
+    ap.add_argument("--chain", help="YAML file of listing pages: open each product on them and save its size information")
     ap.add_argument("--catalog", action="store_true", help="find TV-unit and dining-table category pages in every furniture shop")
     args = ap.parse_args(argv)
+    if args.chain:
+        return probe_chain(Path(args.out), Path(args.chain))
     if args.details or args.catalog:
         if args.catalog:
             probe_catalog(Path(args.out))
