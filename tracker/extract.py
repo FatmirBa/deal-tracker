@@ -261,9 +261,12 @@ def _card_product(card: Tag, base: str) -> Product | None:
         return None
     # title: an element hinting "title/name", else the longest link text, else image alt
     title = ""
-    heading = card.find(["h2", "h3", "h4", "h5"])
-    if heading and len(_clean(heading.get_text(" "))) >= 6:
-        title = _clean(heading.get_text(" "))
+    # a heading counts as the title only when it is (or sits in) the product link, not a spec block heading
+    for heading in card.find_all(["h2", "h3", "h4", "h5"]):
+        linked = heading.find("a", href=True) or heading.find_parent("a", href=True)
+        if linked and len(_clean(heading.get_text(" "))) >= 6:
+            title = _clean(heading.get_text(" "))
+            break
     hinted = None if title else card.find(lambda t: isinstance(t, Tag) and t.name in ("h1", "h2", "h3", "h4", "h5", "a", "div", "span", "p")
                        and TITLE_HINT.search(" ".join(t.get("class") or []) + " " + (t.get("itemprop") or "")))
     if hinted is not None:

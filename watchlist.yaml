@@ -9,7 +9,8 @@
 
 common_exclude: [crijevo, filter, nosac, postolje, deterdzent, tablete, sredstvo, poklopac, torba, navlaka,
   zastitn, folija, punjac, daljinski, kabl, adapter, "dio za", rezervni, drzac, ventil, "pumpa za", grijac,
-  remen, brtva, omeksivac, "sol za", "so za", cistac, sprej, "set za", polica, kosara, korpa za, "za kosu"]
+  remen, brtva, omeksivac, "sol za", "so za", cistac, sprej, "set za", polica, kosara, korpa za, "za kosu",
+  garancij, osiguranj, "usluga", montaz, dimenzije]
 
 items:
   - id: washer
