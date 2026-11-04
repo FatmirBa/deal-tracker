@@ -1,9 +1,7 @@
-[domod] 74 products from 14 searches (0 errors) via cards
+[domod] 74 products from 17 searches (0 errors) via cards
 [imtec] 25 products from 12 searches (0 errors) via embedded
 [technoshop] 74 products from 8 searches (0 errors) via cards
 [tehnodepo] 298 products from 7 searches (0 errors) via cards
 [topizbor] 87 products from 8 searches (0 errors) via cards
-[ekupi] 156 products from 14 searches (0 errors) via cards
-[olx] 183 products from 14 searches (0 errors) via embedded
-Telegram: sent 1 alerts
-Done: 897 products from 7/7 shops in 135s
+[olx] 207 products from 17 searches (0 errors) via embedded
+Done: 765 products from 6/6 shops in 141s
