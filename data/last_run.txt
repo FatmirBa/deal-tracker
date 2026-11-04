@@ -16,5 +16,5 @@
 [udobnost] 58 products from 5 searches (0 errors) via cards
 [laurel] 32 products from 4 searches (0 errors) via cards
 [dalusso] 16 products from 3 searches (0 errors) via cards
-[olx] 204 products from 17 searches (0 errors) via embedded
-Done: 1495 products from 19/19 shops in 275s
+[olx] 203 products from 17 searches (0 errors) via embedded
+Done: 1494 products from 19/19 shops in 266s
