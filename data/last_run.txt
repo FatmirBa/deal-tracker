@@ -7,7 +7,7 @@
 [fontele] 137 products from 12 searches (0 errors) via cards
 [genelec] 31 products from 2 searches (0 errors) via cards
 [procomp] 26 products from 2 searches (0 errors) via embedded
-[saga] 55 products from 5 searches (1 errors) via cards
+[saga] 63 products from 6 searches (2 errors) via cards
 [gama] 20 products from 3 searches (0 errors) via cards
 [jysk] 55 products from 3 searches (0 errors) via cards
 [ezam] 12 products from 2 searches (0 errors) via cards
@@ -17,4 +17,4 @@
 [laurel] 32 products from 4 searches (0 errors) via cards
 [dalusso] 16 products from 3 searches (0 errors) via cards
 [olx] 203 products from 17 searches (0 errors) via embedded
-Done: 1494 products from 19/19 shops in 266s
+Done: 1502 products from 19/19 shops in 290s
