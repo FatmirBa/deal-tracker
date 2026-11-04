@@ -28,6 +28,16 @@ def _chat_id(token: str) -> str | None:
     me = _tg(token, "getMe")
     if str(me.get("description", "")).startswith("network error"):
         print(f"Telegram: {me['description']}")
+        t0 = time.time()
+        try:
+            root = requests.get("https://api.telegram.org/", timeout=20)
+            print(f"Telegram: server itself answers HTTP {root.status_code} in {time.time() - t0:.1f}s "
+                  f"(so the problem is specific to this token's request)")
+        except requests.RequestException as e:
+            print(f"Telegram: server unreachable from the runner ({type(e).__name__} after {time.time() - t0:.1f}s)")
+        print(f"Telegram: saved token shape: {token_shape(os.environ.get('TELEGRAM_TOKEN', ''))}")
+        bad = [hex(ord(c)) for c in os.environ.get("TELEGRAM_TOKEN", "") if ord(c) > 127 or not (c.isalnum() or c in ":_-")]
+        print(f"Telegram: unusual characters in token: {len(bad)} {bad[:5]}")
         return None
     r = _tg(token, "getUpdates")
     if not me.get("ok"):
