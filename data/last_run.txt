@@ -5,7 +5,6 @@
 [topizbor] 87 products from 8 searches (0 errors) via cards
 [ekupi] 161 products from 14 searches (0 errors) via cards
 [olx] 191 products from 14 searches (0 errors) via embedded
-Telegram: token rejected (401 Unauthorized). Re-copy the full token into TELEGRAM_TOKEN.
-Telegram: saved token shape: length 46 (trimmed 46), colon: yes, part before colon: 10 chars all digits, part after: 35 chars, spaces/newlines inside: no. A valid one is 8-10 digits, a colon, then 35 characters.
+Telegram: network error ReadTimeout
 Telegram: no chat yet. Send /start to your bot.
-Done: 909 products from 7/7 shops in 146s
+Done: 909 products from 7/7 shops in 156s
