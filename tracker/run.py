@@ -156,6 +156,10 @@ def publish(found, status, shops_cfg, watch, first_run: bool):
     msg = alerts.format_message(picks, items, shops, app_url, first_run, len(products))
     if msg and alerts.send(msg):
         print(f"Telegram: sent {len(picks)} alerts")
+    if picks or first_run:
+        n = alerts.send_ntfy(picks, items, shops, app_url, first_run, len(products))
+        if n:
+            print(f"ntfy: sent {n} notifications")
     return data
 
 

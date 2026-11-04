@@ -11,14 +11,20 @@ Open `https://<your-username>.github.io/deal-tracker/`, then:
 - **Android (Chrome):** menu, then *Add to Home screen*
 - **iPhone (Safari):** Share, then *Add to Home Screen*
 
-## Telegram alerts
+## Phone alerts: ntfy or Telegram (use either, or both)
+
+**ntfy (quickest):** install the free ntfy app, tap + and subscribe to your secret topic name. Then on GitHub open
+**Settings → Secrets and variables → Actions → New repository secret**, name `NTFY_TOPIC`, value: that topic name.
+Anyone who knows the topic name can read the alerts, so keep it long and random.
+
+**Telegram:**
 
 1. In Telegram, open **@BotFather**, send `/newbot`, follow the steps and copy the token.
 2. Send `/start` to your new bot.
 3. On GitHub, open this repo's **Settings → Secrets and variables → Actions → New repository secret**.
    Name: `TELEGRAM_TOKEN`, value: the token.
 
-You get a message when a watched item drops to your target price (`max_price` in `watchlist.yaml`) or hits a real
+Either way, you get a message when a watched item drops to your target price (`max_price` in `watchlist.yaml`) or hits a real
 30-day low. OLX listings show in the app but don't send alerts (change `alerts: false` in `shops.yaml`).
 
 ## Watching something new

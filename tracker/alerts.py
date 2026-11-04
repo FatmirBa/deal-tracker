@@ -1,4 +1,8 @@
-"""Telegram alerts. Needs the TELEGRAM_TOKEN secret; the chat is found automatically after you send /start to your bot."""
+"""Phone alerts through Telegram and/or ntfy.
+
+Telegram: set the TELEGRAM_TOKEN secret; the chat is found automatically after you send /start to your bot.
+ntfy:     set the NTFY_TOPIC secret to a long random topic name and subscribe to it in the ntfy app.
+"""
 from __future__ import annotations
 
 import html
@@ -88,3 +92,39 @@ def format_message(picks, items, shops, app_url: str, first_run: bool, total: in
     if app_url:
         lines.append(f'<a href="{app_url}">Open the app</a>')
     return "\n\n".join(lines)
+
+
+def send_ntfy(picks, items, shops, app_url: str, first_run: bool, total: int) -> int:
+    """One push notification per deal (tapping it opens the shop page). Returns how many were sent."""
+    topic = os.environ.get("NTFY_TOPIC", "").strip()
+    if not topic:
+        return 0
+    server = os.environ.get("NTFY_SERVER", "https://ntfy.sh").rstrip("/")
+    sent = 0
+
+    def push(title, body, click=None, tags="shopping_cart", priority="default"):
+        nonlocal sent
+        headers = {"Title": title.encode("utf-8"), "Tags": tags, "Priority": priority}
+        if click:
+            headers["Click"] = click
+        try:
+            r = requests.post(f"{server}/{topic}", data=body.encode("utf-8"), headers=headers, timeout=20)
+            sent += int(r.ok)
+        except requests.RequestException:
+            pass
+
+    if first_run:
+        push("Deal tracker is live", f"Watching {total} products. You'll get a ping when something drops.", app_url or None, "white_check_mark")
+    for reason, p in picks[:6]:
+        item = items.get(p["i"], {})
+        shop = shops.get(p["s"], {}).get("name", p["s"])
+        if "deal" in reason:
+            title = f"{item.get('name', p['i'])}: real drop -{p.get('drop_pct', 0):.0f}%"
+        else:
+            title = f"{item.get('name', p['i'])} under {int(item.get('max_price') or 0)} KM"
+        was = f" (was {p['prev']:.0f})" if p.get("prev") and p["prev"] > p["p"] else ""
+        push(title, f"{p['p']:.0f} KM at {shop}{was}\n{p['t'][:120]}", p["u"], "chart_with_downwards_trend" if "deal" in reason else "dart",
+             "high" if reason == "deal+target" else "default")
+    if len(picks) > 6:
+        push("More deals", f"{len(picks) - 6} more in the app.", app_url or None, "shopping_cart")
+    return sent
