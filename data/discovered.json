@@ -1,0 +1,83 @@
+{
+ "domod": {
+  "search": "https://domod.ba/pretraga?keywords={q}",
+  "count": 12,
+  "method": "cards",
+  "render": false,
+  "at": "2026-11-04T00:04:38.970205+00:00",
+  "home_status": 200,
+  "error": null
+ },
+ "imtec": {
+  "search": "https://imtec.ba/trazi?controller=search&s={q}",
+  "count": 5,
+  "method": "embedded",
+  "render": false,
+  "at": "2026-11-04T00:04:38.970205+00:00",
+  "home_status": 200,
+  "error": null
+ },
+ "technoshop": {
+  "search": "https://technoshop.ba/?s={q}&post_type=product",
+  "count": 4,
+  "method": "cards",
+  "render": false,
+  "at": "2026-11-04T00:04:38.970205+00:00",
+  "home_status": 200,
+  "error": null
+ },
+ "tehnodepo": {
+  "search": "https://tehnodepo.ba/shop?q={q}",
+  "count": 111,
+  "method": "cards",
+  "render": false,
+  "at": "2026-11-04T00:04:38.970205+00:00",
+  "home_status": 200,
+  "error": null
+ },
+ "topizbor": {
+  "search": "https://topizbor.ba/?search={q}",
+  "count": 8,
+  "method": "cards",
+  "render": false,
+  "at": "2026-11-04T00:04:38.970205+00:00",
+  "home_status": 200,
+  "error": null
+ },
+ "ekupi": {
+  "search": "https://www.ekupi.ba/bs/search/?text={q}",
+  "count": 25,
+  "method": "cards",
+  "render": false,
+  "at": "2026-11-04T00:04:38.970205+00:00",
+  "home_status": 200,
+  "error": null
+ },
+ "emmezeta": {
+  "search": null,
+  "count": 0,
+  "method": null,
+  "render": false,
+  "at": "2026-11-04T00:04:38.970205+00:00",
+  "home_status": 0,
+  "error": "HTTPSConnectionPool(host='www.emmezeta.ba', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(\"HTTPSConnection(host='www.emmezeta.ba', port=443): Failed to resolve 'www.emmeze"
+ },
+ "jysk": {
+  "search": null,
+  "count": 0,
+  "method": null,
+  "render": false,
+  "at": "2026-11-04T00:04:38.970205+00:00",
+  "home_status": 200,
+  "error": null
+ },
+ "formaideale": {
+  "search": null,
+  "count": 0,
+  "method": null,
+  "render": false,
+  "at": "2026-11-04T00:04:38.970205+00:00",
+  "home_status": 0,
+  "error": "HTTPSConnectionPool(host='www.formaideale.ba', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(\"HTTPSConnection(host='www.formaideale.ba', port=443): Failed to resolve 'www."
+ }
+}
