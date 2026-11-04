@@ -49,6 +49,44 @@ def probe_pages(out: Path):
     print("\n".join(lines))
 
 
+CAT_PATTERNS = {"sofa": re.compile(r"ugaon|kutn|garnitur|sjedec|sofe|sofa", re.I),
+                "wardrobe": re.compile(r"ormar|plakar|garderob|klizn", re.I)}
+
+
+def auto_category_links(f, home: str) -> dict:
+    """Find likely sofa / wardrobe category pages linked from a shop's home page (plain fetch, then headless)."""
+    from urllib.parse import urljoin, urlparse
+    from bs4 import BeautifulSoup
+    res = {"status": 0, "rendered": False, "links": {}}
+    for render in (False, True):
+        code, final, html = f.get(home, render=render)
+        res["status"] = code
+        if code == 0 or code >= 400:
+            if render:
+                return res
+            continue
+        soup = BeautifulSoup(html, "lxml")
+        host = urlparse(final).netloc
+        cands: dict[str, list[tuple[int, str]]] = {k: [] for k in CAT_PATTERNS}
+        for a in soup.find_all("a", href=True):
+            href = urljoin(final, a["href"]).split("#")[0]
+            if urlparse(href).netloc != host:
+                continue
+            text = (a.get_text(" ") or "") + " " + href
+            for kind, pat in CAT_PATTERNS.items():
+                if pat.search(text):
+                    path = urlparse(href).path.strip("/")
+                    depth = path.count("/") + 1
+                    looks_product = bool(re.search(r"/(proizvod|product|artikal|p)/|\d{4,}", href))
+                    score = depth + (10 if looks_product else 0) - (3 if re.search(r"kategor|category|shop|katalog", href) else 0)
+                    cands[kind].append((score, href))
+        res["links"] = {k: list(dict.fromkeys(h for _, h in sorted(v)))[:4] for k, v in cands.items() if v}
+        res["rendered"] = render
+        if res["links"]:
+            return res
+    return res
+
+
 def probe_targets(out: Path, path: Path):
     """For each candidate: robots.txt, listing pages (plain, then headless if needed), search discovery."""
     out.mkdir(parents=True, exist_ok=True)
@@ -61,7 +99,17 @@ def probe_targets(out: Path, path: Path):
             entry = {"home": home, "pages": []}
             rc, _, robots = f.get(home.rstrip("/") + "/robots.txt")
             entry["robots_disallow_all"] = bool(rc == 200 and re.search(r"(?im)^user-agent:\s*\*\s*$(?:\n(?!user-agent).*)*?\n\s*disallow:\s*/\s*$", robots))
-            for i, url in enumerate(t["urls"]):
+            urls = list(t.get("urls") or [])
+            if t.get("auto"):
+                found = auto_category_links(f, home)
+                entry["home_status"] = found["status"]
+                entry["auto_links"] = found["links"]
+                for kind, links in found["links"].items():
+                    for u in links[:2]:
+                        if u not in urls:
+                            urls.append(u)
+                lines.append(f"## {tid} home HTTP {found['status']}{' (headless)' if found['rendered'] else ''}; found sofa links {found['links'].get('sofa', [])[:3]}, wardrobe links {found['links'].get('wardrobe', [])[:3]}")
+            for i, url in enumerate(urls):
                 best = None
                 for render in (False, True):
                     code, final, text = f.get(url, render=render)
