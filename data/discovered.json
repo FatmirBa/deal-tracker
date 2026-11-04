@@ -16,5 +16,32 @@
   "at": "2026-11-04T12:05:17.473871+00:00",
   "home_status": 200,
   "error": null
+ },
+ "domavija": {
+  "search": null,
+  "count": 0,
+  "method": null,
+  "render": false,
+  "at": "2026-11-04T21:31:48.053341+00:00",
+  "home_status": 200,
+  "error": null
+ },
+ "laurel": {
+  "search": null,
+  "count": 0,
+  "method": null,
+  "render": false,
+  "at": "2026-11-04T21:31:48.053341+00:00",
+  "home_status": 200,
+  "error": null
+ },
+ "dalusso": {
+  "search": null,
+  "count": 0,
+  "method": null,
+  "render": true,
+  "at": "2026-11-04T21:31:48.053341+00:00",
+  "home_status": 200,
+  "error": null
  }
 }
