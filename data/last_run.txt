@@ -1,14 +1,15 @@
 [domod] 74 products from 17 searches (0 errors) via cards
 [imtec] 25 products from 12 searches (0 errors) via embedded
 [technoshop] 74 products from 8 searches (0 errors) via cards
-[tehnodepo] 297 products from 7 searches (0 errors) via cards
+[tehnodepo] 299 products from 7 searches (0 errors) via cards
 [topizbor] 87 products from 8 searches (0 errors) via cards
 [bingo] 83 products from 12 searches (0 errors) via cards
-[fontele] 139 products from 12 searches (0 errors) via cards
+[fontele] 138 products from 12 searches (0 errors) via cards
 [genelec] 31 products from 2 searches (0 errors) via cards
 [procomp] 26 products from 2 searches (0 errors) via embedded
-[saga] 16 products from 2 searches (1 errors) via cards
+[saga] 32 products from 2 searches (0 errors) via cards
 [gama] 20 products from 3 searches (0 errors) via cards
 [jysk] 55 products from 3 searches (0 errors) via cards
-[olx] 210 products from 17 searches (0 errors) via embedded
-Done: 1137 products from 13/13 shops in 203s
+[olx] 200 products from 17 searches (0 errors) via embedded
+Telegram: sent 5 alerts
+Done: 1144 products from 13/13 shops in 227s
