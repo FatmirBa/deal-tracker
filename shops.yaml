@@ -137,7 +137,7 @@ shops:
     home: https://domea.ba
     search: https://domea.ba/?s={q}
     kinds: [furniture]
-    title_strip: ["Dnevni boravak", "Ormari", "Spavaća soba", "TDF Garniture"]
+    title_strip: ["Ugaone garniture", "Dnevni boravak", "Ormari", "Spavaća soba", "TDF Garniture"]
     pages:
       sofa: [https://domea.ba/ugaone-garniture/]
       wardrobe: [https://domea.ba/ormari/]

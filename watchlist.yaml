@@ -68,5 +68,5 @@ items:
     kinds: [furniture]
     queries: ["ormar", "plakar", "klizni ormar"]
     must_any: ["ormar", "plakar", "garderob"]
-    exclude: ["civiluk", "kuhinj", "cipelar", "nocn", "toaletn", "kupatil", "metaln", "dio za", "ogledalo", "kutija", "vjesalic", "organizator", "kontejner", "elektricni", "razvodni"]
+    exclude: ["civiluk", "vitrin", "kuhinj", "cipelar", "nocn", "toaletn", "kupatil", "metaln", "dio za", "ogledalo", "kutija", "vjesalic", "organizator", "kontejner", "elektricni", "razvodni"]
     min_price: 150
