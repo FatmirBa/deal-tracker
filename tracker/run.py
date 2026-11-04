@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import argparse
 import os
+import re
 import sys
 import time
 from datetime import datetime, timedelta, timezone
@@ -56,6 +57,24 @@ def accepts(title: str, price: float, item: dict, common_exclude: list[str], mar
     return price >= floor
 
 
+NEXT_TEXT = re.compile(r"^\s*(sljede[cć]a|slijede[cć]a|next|dalje|›|»|→|>)\s*$", re.I)
+
+
+def next_page_url(html: str, base: str) -> str | None:
+    """The listing's "next page" link, if the shop has one (rel=next, WooCommerce/PrestaShop pagers, arrows)."""
+    from bs4 import BeautifulSoup
+    from urllib.parse import urljoin
+    soup = BeautifulSoup(html, "lxml")
+    el = soup.find("link", rel="next") or soup.find("a", rel="next") or soup.select_one("a.next, a.next.page-numbers, li.next a, .pagination-next a, a[aria-label*='Next'], a[aria-label*='Sljede']")
+    if el is None:
+        el = next((a for a in soup.select(".pagination a, .page-numbers a, nav a, .pager a") if NEXT_TEXT.match(a.get_text(" "))), None)
+    href = el.get("href") if el is not None else None
+    if not href or href.startswith(("#", "javascript:")):
+        return None
+    nxt = urljoin(base, href)
+    return None if nxt.rstrip("/") == base.rstrip("/") else nxt
+
+
 def crawl(shops_cfg, watch, only_shop=None):
     f = Fetcher(delay=shops_cfg.get("delay_seconds", 1.5))
     disc = load_json(DISCOVERED, {})
@@ -102,13 +121,24 @@ def crawl(shops_cfg, watch, only_shop=None):
                     targets = [(template.replace("{q}", quote_plus(q)), False) for q in item["queries"]]
                 else:
                     continue
-                for url, trusted in targets:
+                queue = [(url, trusted, 1) for url, trusted in targets]
+                seen_urls = set()
+                while queue:
+                    url, trusted, page_no = queue.pop(0)
+                    if url in seen_urls:
+                        continue
+                    seen_urls.add(url)
                     code, final, text = f.get(url, render=render)
                     st["requests"] += 1
                     if code == 0 or code >= 400:
                         st["errors"] += 1
                         continue
                     prods, rep = extract(text, final, shop.get("selectors"), shop.get("url_template"))
+                    # category pages: follow "next page" so shops with 9-16 items per page are fully covered
+                    if item["id"] in pages and prods and page_no < int(shop.get("max_pages", 4)):
+                        nxt = next_page_url(text, final)
+                        if nxt and nxt not in seen_urls:
+                            queue.append((nxt, trusted, page_no + 1))
                     st["method"] = st["method"] or rep.get("used")
                     for p in prods:
                         if not accepts(p.title, p.price, item, common_ex, bool(shop.get("marketplace")), trusted):
@@ -116,7 +146,10 @@ def crawl(shops_cfg, watch, only_shop=None):
                         k = key_for(p.url)
                         if k in found:
                             continue
-                        found[k] = {"k": k, "t": p.title, "u": p.url, "img": p.image, "s": sid, "i": item["id"],
+                        title = p.title
+                        for suffix in shop.get("title_strip") or []:
+                            title = re.sub(rf"\s*{re.escape(suffix)}\s*$", "", title, flags=re.I)
+                        found[k] = {"k": k, "t": title, "u": p.url, "img": p.image, "s": sid, "i": item["id"],
                                     "p": round(p.price, 2), "o": round(p.old_price, 2) if p.old_price else None,
                                     "m": model_code(p.title)}
                         st["count"] += 1

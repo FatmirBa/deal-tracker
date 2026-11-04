@@ -1,14 +1,3 @@
-# Candidate furniture shops. auto: find sofa / wardrobe category links on the home page and test them.
+# Candidate furniture shops to test (see shops.yaml for the ones already added and the ones left out).
 targets:
-  - {id: ezam, home: https://ezam.ba, auto: true, urls: [https://ezam.ba/kategorija/tapacirani-namjestaj/ugaone-garniture/]}
-  - {id: domavija, home: https://domavija.ba, auto: true, urls: [https://domavija.ba/kategorija/spavaci-program/ormari/]}
-  - {id: ednam, home: https://edna-m.ba, auto: true, urls: []}
-  - {id: viva, home: https://vivanamjestaj.ba, auto: true, urls: []}
-  - {id: inside, home: https://www.inside.ba, auto: true, urls: []}
-  - {id: domea, home: https://domea.ba, auto: true, urls: []}
-  - {id: loftba, home: https://loft.ba, auto: true, urls: []}
-  - {id: lofthr, home: https://loft.hr, auto: true, urls: [https://loft.hr/kategorija/namjestaj/dnevna-soba/kutne-garniture/]}
-  - {id: soffy, home: https://www.soffy.ba, auto: true, urls: []}
-  - {id: laurel, home: https://www.laurelshop.ba, auto: true, urls: []}
-  - {id: udobnost, home: https://www.udobnost.ba, auto: true, urls: []}
-  - {id: dalusso, home: https://dalusso.ba, auto: true, urls: [https://dalusso.ba/kategorije/dnevna-soba/garniture/ugaone-garniture/, https://dalusso.ba/kategorije/spavaca-soba/klizni-ormari/]}
+  - {id: ednam, home: https://edna-m.ba, urls: [https://edna-m.ba/dnevna-soba, https://edna-m.ba/spavaca-soba, https://edna-m.ba/odlaganje]}

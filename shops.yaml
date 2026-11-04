@@ -115,6 +115,60 @@ shops:
       sofa: [https://jysk.ba/dnevna-soba/sofe, https://jysk.ba/dnevna-soba/modularne-sofe]
     strict_pages: [sofa]   # JYSK's sofa section mixes corner sofas with two-seaters and modules
 
+  - id: ezam
+    name: Ezam
+    home: https://ezam.ba
+    search: https://ezam.ba/?post_type=product&s={q}
+    kinds: [furniture]
+    items: [sofa]          # upholstered furniture only, no wardrobes
+    pages:
+      sofa: [https://ezam.ba/kategorija/tapacirani-namjestaj/ugaone-garniture/]
+
+  - id: domavija
+    name: Domavija
+    home: https://domavija.ba
+    kinds: [furniture]
+    pages:
+      sofa: [https://domavija.ba/kategorija/tapacir-bs/ugaone-garniture-bs-bs-bs/]
+      wardrobe: [https://domavija.ba/kategorija/spavaci-program/ormari/]
+
+  - id: domea
+    name: Domea
+    home: https://domea.ba
+    search: https://domea.ba/?s={q}
+    kinds: [furniture]
+    title_strip: ["Dnevni boravak", "Ormari", "Spavaća soba", "TDF Garniture"]
+    pages:
+      sofa: [https://domea.ba/ugaone-garniture/]
+      wardrobe: [https://domea.ba/ormari/]
+
+  - id: udobnost
+    name: Udobnost
+    home: https://www.udobnost.ba
+    search: https://udobnost.ba/?s={q}&post_type=product
+    kinds: [furniture]
+    pages:
+      sofa: [https://udobnost.ba/ugaone-garniture]
+      wardrobe: [https://udobnost.ba/ormari-i-garderoberi]
+
+  - id: laurel
+    name: Laurel
+    home: https://www.laurelshop.ba
+    kinds: [furniture]
+    items: [sofa]          # no wardrobes on the site
+    pages:
+      sofa: [https://www.laurelshop.ba/product-category/ugaone-sofe-fotelje/]
+    strict_pages: [sofa]   # this section also has armchairs and sofa sets
+
+  - id: dalusso
+    name: Dalusso
+    home: https://dalusso.ba
+    kinds: [furniture]
+    render: true           # listings are filled in by JavaScript
+    pages:
+      sofa: [https://dalusso.ba/kategorije/dnevna-soba/garniture/ugaone-garniture/]
+      wardrobe: [https://dalusso.ba/kategorije/spavaca-soba/ormari/, https://dalusso.ba/kategorije/spavaca-soba/klizni-ormari/]
+
   - id: olx
     name: OLX.ba
     home: https://olx.ba
@@ -125,7 +179,9 @@ shops:
     alerts: false          # shown in the app, but no Telegram pings (too many used listings)
 
 # Tested and left out:
-#   blocked automated visits (HTTP 403): zeusbl.com, 3dbox.ba, dalusso.ba, deluxehome.ba, mirnanamjestaj.ba, kesten.ba, domavija.ba
+#   blocked automated visits (HTTP 403): zeusbl.com, 3dbox.ba, deluxehome.ba, mirnanamjestaj.ba, kesten.ba
+#   inside.ba (forbids automated visits, doesn't answer), soffy.ba (showroom only, no prices), loft.ba (no prices in listings),
+#   Viva namještaj (no website, only Facebook/Instagram)
 #   no readable prices: zokielektronika.ba (JavaScript only), tehnomag.com (prices without currency), sinmax.ba, kalea.ba (no prices online)
 #   not in BiH: Forma Ideale, Emmezeta, IKEA
 candidates: []
