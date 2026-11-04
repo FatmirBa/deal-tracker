@@ -4,6 +4,6 @@
 [tehnodepo] 298 products from 7 searches (0 errors) via cards
 [topizbor] 87 products from 8 searches (0 errors) via cards
 [ekupi] 161 products from 14 searches (0 errors) via cards
-[olx] 188 products from 14 searches (0 errors) via embedded
+[olx] 190 products from 14 searches (0 errors) via embedded
 Telegram: no chat yet. Send /start to your bot.
-Done: 906 products from 7/7 shops in 145s
+Done: 908 products from 7/7 shops in 156s
