@@ -1,0 +1,20 @@
+# Candidate shops to test: each URL is a listing page; the probe reports whether prices can be read.
+targets:
+  # appliances / electronics
+  - {id: bingo, home: https://bingoshop.ba, urls: [https://bingoshop.ba/shop/bijela-tehnika]}
+  - {id: zeus, home: https://zeusbl.com, urls: [https://zeusbl.com/kategorija-proizvoda/bijela-tehnika/ves-masine]}
+  - {id: fontele, home: https://fontele.ba, urls: [https://fontele.ba/shop/bijela-tehnika]}
+  - {id: zoki, home: https://zokielektronika.ba, urls: [https://zokielektronika.ba/kat/351/]}
+  - {id: genelec, home: https://genelec.ba, urls: [https://genelec.ba/]}
+  - {id: procomp, home: https://procomp.ba, urls: [https://procomp.ba/435-akcija-televizora]}
+  - {id: 3dbox, home: https://3dbox.ba, urls: [https://3dbox.ba/product-category/televizori-i-oprema/televizori/]}
+  - {id: tehnomag, home: https://tehnomag.com, urls: ["https://tehnomag.com/?s=ves+masina&post_type=product"]}
+  # furniture
+  - {id: dalusso, home: https://dalusso.ba, urls: [https://dalusso.ba/kategorije/dnevna-soba/garniture/ugaone-garniture/, https://dalusso.ba/kategorije/spavaca-soba/klizni-ormari/]}
+  - {id: deluxehome, home: https://www.deluxehome.ba, urls: [https://www.deluxehome.ba/product-category/ugaona/]}
+  - {id: saga, home: https://saga-bih.com, urls: [https://saga-bih.com/kategorija/namjestaj/dnevni-boravci/garniture/ugaone-garniture/, https://saga-bih.com/kategorija/namjestaj/spavace-sobe/ormari/]}
+  - {id: gama, home: https://www.gamashop.ba, urls: [https://www.gamashop.ba/ormari]}
+  - {id: mirna, home: https://mirnanamjestaj.ba, urls: [https://mirnanamjestaj.ba/kategorije/ormari/]}
+  - {id: kesten, home: https://kesten.ba, urls: [https://kesten.ba/index.php/bih/shop-katalog/namjestaj/ormari]}
+  - {id: domavija, home: https://domavija.ba, urls: [https://domavija.ba/kategorija/spavaci-program/ormari/]}
+  - {id: jysk, home: https://jysk.ba, urls: [https://jysk.ba/]}

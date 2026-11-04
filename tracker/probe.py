@@ -49,14 +49,56 @@ def probe_pages(out: Path):
     print("\n".join(lines))
 
 
+def probe_targets(out: Path, path: Path):
+    """For each candidate: robots.txt, listing pages (plain, then headless if needed), search discovery."""
+    out.mkdir(parents=True, exist_ok=True)
+    targets = yaml.safe_load(path.read_text(encoding="utf-8"))["targets"]
+    f = Fetcher(delay=1.2)
+    lines, report = [], {}
+    try:
+        for t in targets:
+            tid, home = t["id"], t["home"]
+            entry = {"home": home, "pages": []}
+            rc, _, robots = f.get(home.rstrip("/") + "/robots.txt")
+            entry["robots_disallow_all"] = bool(rc == 200 and re.search(r"(?im)^user-agent:\s*\*\s*$(?:\n(?!user-agent).*)*?\n\s*disallow:\s*/\s*$", robots))
+            for i, url in enumerate(t["urls"]):
+                best = None
+                for render in (False, True):
+                    code, final, text = f.get(url, render=render)
+                    prods, rep = ([], {}) if code == 0 or code >= 400 else extract(text, final)
+                    if best is None or len(prods) > best[1]:
+                        best = (render, len(prods), code, rep, prods, text)
+                    if len(prods) >= 5:
+                        break
+                render, n, code, rep, prods, text = best
+                (out / f"{tid}_{i}.html").write_text(text[:900_000], encoding="utf-8")
+                entry["pages"].append({"url": url, "status": code, "render": render, "count": n, "method": rep.get("used"),
+                                       "sample": [{"t": p.title[:80], "p": p.price, "o": p.old_price, "img": bool(p.image)} for p in prods[:6]]})
+                lines.append(f"## {tid} [{url}] HTTP {code}, {n} products via {rep.get('used')}{' (headless)' if render else ''}")
+                lines += [f"- {p.price} (old {p.old_price}) {p.title[:80]}" for p in prods[:5]]
+            d = discover(f, home, max_tries=6)
+            entry["search"] = d.get("search")
+            entry["search_count"] = d.get("count")
+            lines.append(f"   search: {d.get('search')} ({d.get('count')} products); robots blocks all: {entry['robots_disallow_all']}")
+            report[tid] = entry
+            print("\n".join(lines[-8:]), flush=True)
+    finally:
+        f.close()
+    (out / "targets.json").write_text(json.dumps(report, ensure_ascii=False, indent=1), encoding="utf-8")
+    (out / "TARGETS.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default="probe")
     ap.add_argument("--render", action="store_true", help="also try headless Chromium for shops that fail")
     ap.add_argument("--pages", action="store_true", help="only fetch each shop's configured category pages and save them")
+    ap.add_argument("--targets", help="YAML file of candidate shops with listing URLs to test")
     args = ap.parse_args(argv)
     if args.pages:
         return probe_pages(Path(args.out))
+    if args.targets:
+        return probe_targets(Path(args.out), Path(args.targets))
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
     cfg = yaml.safe_load(Path("shops.yaml").read_text(encoding="utf-8"))

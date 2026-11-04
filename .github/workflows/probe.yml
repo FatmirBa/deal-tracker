@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: "full = map every shop, pages = save category pages only"
+        description: "full = map every shop, pages = save category pages only, targets = test probe_targets.yaml"
         default: full
   push:
     branches: [main]
@@ -28,7 +28,7 @@ jobs:
       - env:
           MODE: ${{ inputs.mode || 'full' }}
         run: |
-          if [ "$MODE" = "pages" ]; then ARGS="--pages"; else ARGS="--render"; fi
+          if [ "$MODE" = "pages" ]; then ARGS="--pages"; elif [ "$MODE" = "targets" ]; then ARGS="--targets probe_targets.yaml"; else ARGS="--render"; fi
           python -m tracker.probe --out /tmp/probe $ARGS 2>&1 | tee /tmp/probe-log.txt
       - name: Publish results to the probe branch
         run: |
@@ -39,4 +39,4 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A && git commit -qm "Probe $(date -u +'%F %H:%M') UTC"
           git push -qf "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" probe
-          cat REPORT.md PAGES.md 2>/dev/null >> "$GITHUB_STEP_SUMMARY" || true
+          cat REPORT.md PAGES.md TARGETS.md 2>/dev/null >> "$GITHUB_STEP_SUMMARY" || true
