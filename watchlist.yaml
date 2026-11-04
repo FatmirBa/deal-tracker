@@ -17,6 +17,7 @@ items:
     kinds: [appliances]
     queries: ["veš mašina", "mašina za veš", "perilica rublja"]
     must_any: ["ves", "perilica rublja", "masina za pranje", "pranje vesa"]
+    exclude: ["susilica", "masina za susenje", "sudja", "posud", "suda"]
     min_price: 250
     max_price: 600
 
@@ -57,6 +58,6 @@ items:
     name: Corner sofa
     kinds: [furniture]
     queries: ["ugaona garnitura", "kutna garnitura"]
-    must_any: ["ugaon", "kutn", "sofa", "trosjed"]
-    exclude: ["bastensk", "vrtn", "jastuk", "navlak", "rattan", "lezaljk"]
+    must_any: ["garnitur", "sofa", "trosjed", "kauc"]
+    exclude: ["bastensk", "vrtn", "jastuk", "navlak", "rattan", "lezaljk", "brusilic", "busilic", "stol", "ormar", "kupatil", "wc"]
     min_price: 300

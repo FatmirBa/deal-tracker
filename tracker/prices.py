@@ -51,6 +51,8 @@ def find_prices(text: str) -> list[float]:
     for m in PRICE_RE.finditer(text):
         if INSTALL_BEFORE.search(text[max(0, m.start() - 22): m.start()]) or INSTALL_AFTER.search(text[m.end(): m.end() + 14]):
             continue
+        if m.start() > 0 and text[m.start() - 1] in "-−–":  # "-251 KM" is a savings badge, not a price
+            continue
         v = parse_number(m.group(1) or m.group(2))
         if v is not None:
             out.append(v)

@@ -28,11 +28,35 @@ def slug(url: str) -> str:
     return re.sub(r"[^a-z0-9]+", "_", urlparse(url).netloc.replace("www.", ""))[:40].strip("_")
 
 
+def probe_pages(out: Path):
+    """Save the first category page per shop and item, plus what extraction makes of it (for tuning parsers)."""
+    out.mkdir(parents=True, exist_ok=True)
+    cfg = yaml.safe_load(Path("shops.yaml").read_text(encoding="utf-8"))
+    f = Fetcher(delay=1.2)
+    lines = []
+    try:
+        for shop in cfg["shops"]:
+            for item, urls in (shop.get("pages") or {}).items():
+                code, final, text = f.get(urls[0], render=bool(shop.get("render")))
+                (out / f"{shop['id']}_{item}.html").write_text(text[:900_000], encoding="utf-8")
+                prods, rep = extract(text, final, shop.get("selectors"), shop.get("url_template"))
+                lines.append(f"## {shop['id']} / {item}: HTTP {code}, {len(prods)} products via {rep}")
+                lines += [f"- {p.price} (old {p.old_price}) {p.title[:80]}" for p in prods[:6]]
+                print(lines[-min(len(lines), 7):][0], flush=True)
+    finally:
+        f.close()
+    (out / "PAGES.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    print("\n".join(lines))
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default="probe")
     ap.add_argument("--render", action="store_true", help="also try headless Chromium for shops that fail")
+    ap.add_argument("--pages", action="store_true", help="only fetch each shop's configured category pages and save them")
     args = ap.parse_args(argv)
+    if args.pages:
+        return probe_pages(Path(args.out))
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
     cfg = yaml.safe_load(Path("shops.yaml").read_text(encoding="utf-8"))
