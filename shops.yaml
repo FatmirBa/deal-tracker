@@ -113,6 +113,7 @@ shops:
     pages:
       wardrobe: [https://jysk.ba/odlaganje/ormari]
       sofa: [https://jysk.ba/dnevna-soba/sofe, https://jysk.ba/dnevna-soba/modularne-sofe]
+    strict_pages: [sofa]   # JYSK's sofa section mixes corner sofas with two-seaters and modules
 
   - id: olx
     name: OLX.ba

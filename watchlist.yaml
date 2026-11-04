@@ -59,8 +59,8 @@ items:
     name: Corner sofa
     kinds: [furniture]
     queries: ["ugaona garnitura", "kutna garnitura"]
-    must_any: ["garnitur", "sofa", "trosjed", "kauc"]
-    exclude: ["bastensk", "vrtn", "jastuk", "navlak", "rattan", "lezaljk", "brusilic", "busilic", "stol", "ormar", "kupatil", "wc"]
+    must_any: ["ugaon", "kutn", "l oblik", "l-oblik", "u oblik", "garnitur"]
+    exclude: ["bastensk", "vrtn", "jastuk", "navlak", "rattan", "lezaljk", "modul kauca", "kauc modul", "naslon", "tabure", "brusilic", "busilic", "stol", "ormar", "kupatil", "wc"]
     min_price: 300
 
   - id: wardrobe
@@ -68,5 +68,5 @@ items:
     kinds: [furniture]
     queries: ["ormar", "plakar", "klizni ormar"]
     must_any: ["ormar", "plakar", "garderob"]
-    exclude: ["kuhinj", "cipelar", "nocn", "toaletn", "kupatil", "metaln", "dio za", "ogledalo", "kutija", "vjesalic", "organizator", "kontejner", "elektricni", "razvodni"]
+    exclude: ["civiluk", "kuhinj", "cipelar", "nocn", "toaletn", "kupatil", "metaln", "dio za", "ogledalo", "kutija", "vjesalic", "organizator", "kontejner", "elektricni", "razvodni"]
     min_price: 150

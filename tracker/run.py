@@ -96,7 +96,8 @@ def crawl(shops_cfg, watch, only_shop=None):
                 if not (kinds & item_kinds or "everything" in kinds):
                     continue
                 if item["id"] in pages:
-                    targets = [(u, True) for u in pages[item["id"]]]
+                    strict = item["id"] in set(shop.get("strict_pages") or [])  # broad category: still require the item's keywords
+                    targets = [(u, not strict) for u in pages[item["id"]]]
                 elif template:
                     targets = [(template.replace("{q}", quote_plus(q)), False) for q in item["queries"]]
                 else:
