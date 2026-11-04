@@ -62,12 +62,6 @@ shops:
       fridge: [https://topizbor.ba/rashladni-aparati/frizideri-sa-zamrzivacem, https://topizbor.ba/rashladni-aparati/frizideri]
       tv: [https://topizbor.ba/televizori]
 
-  - id: ekupi
-    name: eKupi
-    home: https://www.ekupi.ba
-    search: https://www.ekupi.ba/bs/search/?text={q}
-    kinds: [appliances, furniture, everything]
-
   - id: olx
     name: OLX.ba
     home: https://olx.ba

@@ -82,6 +82,13 @@ button,input,select{font:inherit;color:inherit}
 .chip{flex:none;border:0;border-radius:18px;padding:7px 13px;background:var(--chip);cursor:pointer;font-size:15px;white-space:nowrap}
 .chip[aria-pressed="true"]{background:var(--chip-on);color:var(--chip-on-ink);font-weight:600}
 .chip.add{background:none;border:1.5px dashed var(--line);text-decoration:none;display:inline-flex;align-items:center}
+.cap[hidden]{display:none}
+.cap{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:4px 12px;padding:10px 2px 2px;font-size:14px}
+.cap label{color:var(--soft)}
+.cap input{width:100%;height:28px;accent-color:var(--ink);margin:0}
+.cap output{font:700 20px/1 var(--cond);min-width:84px;text-align:right}
+.caphidden{grid-column:1/-1;color:var(--soft);font-size:13px;min-height:1em}
+.capnote{font:600 13px var(--text);color:var(--soft);background:var(--chip);border-radius:5px;padding:2px 7px;margin-left:8px;vertical-align:3px}
 .opts{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;padding:2px 0 4px;font-size:14px}
 .opts label{display:inline-flex;align-items:center;gap:6px;cursor:pointer}
 .opts input{width:18px;height:18px;accent-color:var(--ink)}
@@ -156,6 +163,12 @@ footer a{color:var(--ink)}
       <input id="q" type="search" placeholder="Search product or model" autocomplete="off" aria-label="Search products">
     </div>
     <div class="chips" id="chips" role="group" aria-label="Filter by item"></div>
+    <div class="cap" id="cap" hidden>
+      <label for="capRange">Price up to</label>
+      <input type="range" id="capRange" min="100" max="1000" step="10" value="1000">
+      <output id="capVal" for="capRange">Any price</output>
+      <span class="caphidden" id="capHidden"></span>
+    </div>
   </div>
   <div class="opts">
       <label><input type="checkbox" id="fDeals"> Real drops</label>
@@ -183,7 +196,10 @@ const store = { get(k, d) { try { const v = localStorage.getItem("dt:" + k); ret
 
 let DATA = null, ITEMS = {}, SHOPS = {}, BYMODEL = {};
 const state = { q: "", item: store.get("item", "all"), deals: store.get("deals", false), target: store.get("target", false),
-                olx: store.get("olx", false), sort: store.get("sort", "price"), expanded: {} };
+                olx: store.get("olx", false), sort: store.get("sort", "price"), expanded: {}, caps: store.get("caps", {}) };
+const CAP_ITEMS = new Set(["washer", "dishwasher", "dryer", "fridge", "tv"]);
+const CAP_TOP = 1000;  // slider's far right = no limit
+const capOf = (id) => (CAP_ITEMS.has(id) && state.caps[id] ? state.caps[id] : null);
 
 function ago(iso) {
   const m = Math.round((Date.now() - new Date(iso)) / 60000);
@@ -265,6 +281,8 @@ function filtered() {
     if (state.deals && !(p.low30 || p.drop_pct >= 5)) return false;
     const t = ITEMS[p.i]?.target;
     if (state.target && !(t && p.p <= t)) return false;
+    const cap = capOf(p.i);
+    if (cap && p.p > cap) return false;
     if (words.length) { const hay = norm(p.t + " " + (p.m || "") + " " + (SHOPS[p.s]?.name || "")); if (!words.every((w) => hay.includes(w))) return false; }
     return true;
   });
@@ -301,7 +319,18 @@ function renderChips() {
   $("#chips").querySelectorAll("button.chip").forEach((b) => b.onclick = () => setItem(b.dataset.item));
 }
 
-function setItem(id) { state.item = id; store.set("item", id); renderChips(); renderResults(); }
+function renderCap() {
+  const box = $("#cap"), on = CAP_ITEMS.has(state.item);
+  box.hidden = !on;
+  if (!on || !DATA) return;
+  const cap = capOf(state.item);
+  $("#capRange").value = cap || CAP_TOP;
+  $("#capVal").textContent = cap ? `${km(cap)} KM` : "Any price";
+  const above = cap ? DATA.products.filter((p) => p.i === state.item && p.p > cap && !(state.olx && isOlx(p))).length : 0;
+  $("#capHidden").textContent = above ? `${above} more above this price` : "";
+}
+
+function setItem(id) { state.item = id; store.set("item", id); renderChips(); renderCap(); renderResults(); }
 
 function renderResults() {
   const list = filtered();
@@ -320,7 +349,8 @@ function renderResults() {
       const g = list.filter((p) => p.i === it.id);
       if (!g.length) return "";
       const n = state.expanded[it.id] || 4;
-      return `<section class="group"><h2>${esc(it.name)} <button data-item="${esc(it.id)}">See all ${g.length}</button></h2>
+      const cap = capOf(it.id);
+      return `<section class="group"><h2><span>${esc(it.name)}${cap ? `<span class="capnote">up to ${km(cap)} KM</span>` : ""}</span> <button data-item="${esc(it.id)}">See all ${g.length}</button></h2>
         <div class="grid">${g.slice(0, n).map(card).join("")}</div></section>`;
     }).join("");
     box.querySelectorAll(".group h2 button").forEach((b) => b.onclick = () => setItem(b.dataset.item));
@@ -359,14 +389,22 @@ async function load() {
   for (const p of DATA.products) if (p.m) (BYMODEL[p.m] ||= []).push(p);
   for (const m in BYMODEL) BYMODEL[m].sort((a, b) => a.p - b.p);
   if (state.item !== "all" && !ITEMS[state.item]) state.item = "all";
-  renderTop(); renderList(); renderChips(); renderResults();
+  renderTop(); renderList(); renderChips(); renderCap(); renderResults();
 }
 
 $("#q").addEventListener("input", (e) => { state.q = e.target.value; renderResults(); });
 for (const [id, key] of [["#fDeals", "deals"], ["#fTarget", "target"], ["#fOlx", "olx"]]) {
   const el = $(id); el.checked = state[key];
-  el.onchange = () => { state[key] = el.checked; store.set(key, el.checked); renderResults(); };
+  el.onchange = () => { state[key] = el.checked; store.set(key, el.checked); renderCap(); renderResults(); };
 }
+let capFrame = 0;
+$("#capRange").addEventListener("input", (e) => {
+  const v = Number(e.target.value);
+  if (v >= CAP_TOP) delete state.caps[state.item]; else state.caps[state.item] = v;
+  store.set("caps", state.caps);
+  cancelAnimationFrame(capFrame);
+  capFrame = requestAnimationFrame(() => { renderCap(); renderResults(); });
+});
 $("#sort").value = state.sort;
 $("#sort").onchange = (e) => { state.sort = e.target.value; store.set("sort", state.sort); renderResults(); };
 $("#shopsbtn").onclick = () => { const p = $("#shoppanel"); const open = !p.classList.contains("open"); p.classList.toggle("open", open); $("#shopsbtn").setAttribute("aria-expanded", open); };

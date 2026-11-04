@@ -9,7 +9,7 @@
 
 common_exclude: [crijevo, filter, nosac, postolje, deterdzent, tablete, sredstvo, poklopac, torba, navlaka,
   zastitn, folija, punjac, daljinski, kabl, adapter, "dio za", rezervni, drzac, ventil, "pumpa za", grijac,
-  remen, brtva, omeksivac, "sol za", "so za", cistac, sprej, "set za", polica, kosara, korpa za, "za kosu",
+  remen, brtva, omeksivac, "sol za", "so za", cistac, sprej, "set za", kosara, korpa za, "za kosu",
   garancij, osiguranj, "usluga", montaz, dimenzije]
 
 items:
@@ -18,7 +18,7 @@ items:
     kinds: [appliances]
     queries: ["veš mašina", "mašina za veš", "perilica rublja"]
     must_any: ["ves", "perilica rublja", "masina za pranje", "pranje vesa"]
-    exclude: ["susilica", "masina za susenje", "sudja", "posud", "suda"]
+    exclude: ["susilica", "masina za susenje", "sudja", "posud", "suda", "polica"]
     min_price: 250
     max_price: 600
 
@@ -44,7 +44,7 @@ items:
     kinds: [appliances]
     queries: ["frižider", "hladnjak"]
     must_any: ["frizider", "hladnjak", "kombinovani", "frizidera"]
-    exclude: ["prijenosni", "auto hladnjak", "magnet", "vinski", "vitrina", "skrinja"]
+    exclude: ["prijenosni", "auto hladnjak", "magnet", "vinski", "vitrina", "skrinja", "polica"]
     min_price: 250
 
   - id: tv
@@ -62,3 +62,11 @@ items:
     must_any: ["garnitur", "sofa", "trosjed", "kauc"]
     exclude: ["bastensk", "vrtn", "jastuk", "navlak", "rattan", "lezaljk", "brusilic", "busilic", "stol", "ormar", "kupatil", "wc"]
     min_price: 300
+
+  - id: wardrobe
+    name: Wardrobe
+    kinds: [furniture]
+    queries: ["ormar", "plakar", "klizni ormar"]
+    must_any: ["ormar", "plakar", "garderob"]
+    exclude: ["kuhinj", "cipelar", "nocn", "toaletn", "kupatil", "metaln", "dio za", "ogledalo", "kutija", "vjesalic", "organizator", "kontejner", "elektricni", "razvodni"]
+    min_price: 150
