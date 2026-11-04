@@ -32,6 +32,7 @@ def _chat_id(token: str) -> str | None:
         return None
     if not me.get("ok"):
         print(f"Telegram: token rejected ({me.get('error_code')} {me.get('description')}). Re-copy the full token into TELEGRAM_TOKEN.")
+        print(f"Telegram: saved token shape: {token_shape(os.environ.get('TELEGRAM_TOKEN', ''))}. A valid one is 8-10 digits, a colon, then 35 characters.")
         return None
     print(f"Telegram: token belongs to @{me['result'].get('username')}")
     if not r.get("ok"):
@@ -46,8 +47,17 @@ def _chat_id(token: str) -> str | None:
     return None
 
 
+def token_shape(raw: str) -> str:
+    """Describe a token's format without revealing it (for the run log)."""
+    t = raw.strip()
+    head, colon, tail = t.partition(":")
+    return (f"length {len(raw)} (trimmed {len(t)}), colon: {'yes' if colon else 'NO'}, "
+            f"part before colon: {len(head)} chars{' all digits' if head.isdigit() else ' NOT all digits'}, "
+            f"part after: {len(tail)} chars, spaces/newlines inside: {'yes' if any(c.isspace() for c in t) else 'no'}")
+
+
 def send(text: str) -> bool:
-    token = os.environ.get("TELEGRAM_TOKEN")
+    token = (os.environ.get("TELEGRAM_TOKEN") or "").strip()
     if not token:
         return False
     chat = _chat_id(token)
