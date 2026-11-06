@@ -112,6 +112,31 @@ def from_selectors(soup: BeautifulSoup, base: str, sel: dict) -> list[Product]:
     return out
 
 
+
+# ---------------------------------------------------------------- 1b. JSON feed with a field map
+def from_json_map(text: str, base: str, m: dict) -> list[Product]:
+    """Shops whose page is an empty app shell and whose products come from a JSON feed.
+    m: items (key of the list, optional), id, title, price (field or list of fields: first one above 0 wins),
+    old_price (field; shown only if higher than the price), image, url_template ({id} is replaced)."""
+    data = json.loads(text)
+    items = data.get(m["items"]) if m.get("items") and isinstance(data, dict) else data
+    fields = m["price"] if isinstance(m["price"], list) else [m["price"]]
+    out = []
+    for it in items or []:
+        if not isinstance(it, dict):
+            continue
+        price = next((v for v in (_num(it.get(f)) for f in fields) if v and v > 0), None)
+        title = _clean(str(it.get(m["title"]) or ""))
+        pid = it.get(m.get("id", "id"))
+        url = m["url_template"].replace("{id}", str(pid)) if m.get("url_template") and pid is not None else None
+        if not (title and price and url):
+            continue
+        old = _num(it.get(m["old_price"])) if m.get("old_price") else None
+        img = it.get(m["image"]) if m.get("image") else None
+        out.append(Product(clean_title(title), float(price), url, old if old and old > price else None,
+                           img if isinstance(img, str) and img.startswith("http") else None, "jsonmap"))
+    return out
+
 # ---------------------------------------------------------------- 2. JSON-LD
 def from_jsonld(soup: BeautifulSoup, base: str) -> list[Product]:
     out = []
@@ -356,7 +381,12 @@ def extract(text: str, base: str, selectors: dict | None = None, url_template: s
             report[f"{name}_error"] = f"{type(e).__name__}: {str(e)[:80]}"
             results[name] = []
 
-    if selectors and soup is not None:
+    if selectors and selectors.get("json") and is_json:
+        safe("jsonmap", lambda: from_json_map(text, base, selectors["json"]))
+        if results.get("jsonmap"):
+            report["jsonmap"] = len(results["jsonmap"])
+            return results["jsonmap"], report | {"used": "jsonmap"}
+    if selectors and soup is not None and selectors.get("card"):
         safe("selectors", lambda: from_selectors(soup, base, selectors))
     if soup is not None:
         safe("jsonld", lambda: from_jsonld(soup, base))

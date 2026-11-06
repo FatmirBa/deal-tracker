@@ -77,3 +77,17 @@ def test_title_digits_never_merge_into_price():
     assert find_prices("FINLUX FRIŽIDER GN 76L/10L 110/FN1101\n   349,00 KM") == [349.0]
     assert find_prices('Samsung TV 55 899 KM') == [899.0]
     assert find_prices("1\u00a0299,00 KM") == [1299.0]  # non-breaking space thousands still fine
+
+
+def test_json_map_feed():
+    """App-style shop: products come from a JSON feed; the sale price wins and the normal price becomes the 'was' price."""
+    feed = ('{"items":[{"id":602,"name":"Ugaona garnitura Victoria Bli","price":2139,"discountedPrice":1604,"image":"https://api.test/i/602.jpg"},'
+            '{"id":452,"name":"Ugaona garnitura Gloria","price":649,"discountedPrice":null,"image":"abc"},'
+            '{"id":9,"name":"Bez cijene","price":0,"discountedPrice":null}],"totalItems":3}')
+    sel = {"json": {"items": "items", "id": "id", "title": "name", "price": ["discountedPrice", "price"], "old_price": "price",
+                    "image": "image", "url_template": "https://viva.test/products/{id}"}}
+    prods, rep = extract(feed, "https://api.test/api/Products", sel)
+    assert rep["used"] == "jsonmap" and len(prods) == 2
+    assert (prods[0].price, prods[0].old_price, prods[0].url) == (1604.0, 2139.0, "https://viva.test/products/602")
+    assert prods[0].image == "https://api.test/i/602.jpg"
+    assert (prods[1].price, prods[1].old_price, prods[1].image) == (649.0, None, None)

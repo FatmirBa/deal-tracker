@@ -108,6 +108,23 @@ shops:
     kinds: [appliances]
     items: [tv]
 
+  - id: viva
+    name: Viva
+    home: https://viva.ba
+    kinds: [furniture]
+    selectors:           # viva.ba is an app (the page itself is empty); its products come from a JSON feed
+      json:
+        items: items
+        id: id
+        title: name
+        price: [discountedPrice, price]   # the sale price when there is one
+        old_price: price                  # then the normal price is the "was" price
+        image: image
+        url_template: https://viva.ba/products/{id}
+    pages:               # categories=7 corner sofas, 12 wardrobes; the feed holds 44 and 93, so one page of 200 is enough
+      sofa: ["https://api.viva.ba/api/Products/query2?page=1&pageSize=200&sortBy=LogTime&sortDescending=true&categories=7"]
+      wardrobe: ["https://api.viva.ba/api/Products/query2?page=1&pageSize=200&sortBy=LogTime&sortDescending=true&categories=12"]
+
   - id: jysk
     name: JYSK
     home: https://jysk.ba
@@ -148,7 +165,7 @@ shops:
 # Tested and left out:
 #   blocked automated visits (HTTP 403): zeusbl.com, 3dbox.ba, deluxehome.ba, mirnanamjestaj.ba, kesten.ba
 #   inside.ba (forbids automated visits, doesn't answer), soffy.ba (showroom only, no prices), loft.ba (no prices in listings),
-#   viva.ba (only a placeholder page with a Viber link, no products), adaa.ba (made to order, every product says "Na upit", no prices)
+#   adaa.ba (made to order, every product says "Na upit", no prices)
 #   no readable prices: zokielektronika.ba (JavaScript only), tehnomag.com (prices without currency), sinmax.ba, kalea.ba (no prices online)
 #   not in BiH: Forma Ideale, Emmezeta, IKEA
 candidates: []
