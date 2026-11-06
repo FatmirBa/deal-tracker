@@ -88,23 +88,6 @@ shops:
     kinds: [appliances]
     items: [tv]
 
-  - id: saga
-    name: Saga
-    home: https://saga-bih.com
-    search: https://saga-bih.com/?post_type=product&s={q}
-    kinds: [furniture]
-    pages:
-      sofa: [https://saga-bih.com/kategorija/namjestaj/dnevni-boravci/garniture/ugaone-garniture/]
-      wardrobe: [https://saga-bih.com/kategorija/namjestaj/spavace-sobe/ormari/]
-
-  - id: gama
-    name: Gama
-    home: https://www.gamashop.ba
-    search: https://www.gamashop.ba/?s={q}&post_type=product
-    kinds: [furniture]
-    pages:
-      wardrobe: [https://www.gamashop.ba/ormari]
-
   - id: jysk
     name: JYSK
     home: https://jysk.ba
@@ -132,25 +115,6 @@ shops:
       sofa: [https://domavija.ba/kategorija/tapacir-bs/ugaone-garniture-bs-bs-bs/]
       wardrobe: [https://domavija.ba/kategorija/spavaci-program/ormari/]
 
-  - id: domea
-    name: Domea
-    home: https://domea.ba
-    search: https://domea.ba/?s={q}
-    kinds: [furniture]
-    title_strip: ["Ugaone garniture", "Dnevni boravak", "Ormari", "Spavaća soba", "TDF Garniture"]
-    pages:
-      sofa: [https://domea.ba/ugaone-garniture/]
-      wardrobe: [https://domea.ba/ormari/]
-
-  - id: udobnost
-    name: Udobnost
-    home: https://www.udobnost.ba
-    search: https://udobnost.ba/?s={q}&post_type=product
-    kinds: [furniture]
-    pages:
-      sofa: [https://udobnost.ba/ugaone-garniture]
-      wardrobe: [https://udobnost.ba/ormari-i-garderoberi]
-
   - id: laurel
     name: Laurel
     home: https://www.laurelshop.ba
@@ -160,24 +124,7 @@ shops:
       sofa: [https://www.laurelshop.ba/product-category/ugaone-sofe-fotelje/]
     strict_pages: [sofa]   # this section also has armchairs and sofa sets
 
-  - id: dalusso
-    name: Dalusso
-    home: https://dalusso.ba
-    kinds: [furniture]
-    render: true           # listings are filled in by JavaScript
-    pages:
-      sofa: [https://dalusso.ba/kategorije/dnevna-soba/garniture/ugaone-garniture/]
-      wardrobe: [https://dalusso.ba/kategorije/spavaca-soba/ormari/, https://dalusso.ba/kategorije/spavaca-soba/klizni-ormari/]
-
-  - id: olx
-    name: OLX.ba
-    home: https://olx.ba
-    search: https://olx.ba/api/search?q={q}
-    kinds: [appliances, furniture, everything]
-    marketplace: true      # private sellers too: prices can be "po dogovoru", used items
-    url_template: https://olx.ba/artikal/{id}
-    alerts: false          # shown in the app, but no Telegram pings (too many used listings)
-
+# Removed on request (Nov 2026): saga, gama, domea, udobnost, dalusso, olx.
 # Tested and left out:
 #   blocked automated visits (HTTP 403): zeusbl.com, 3dbox.ba, deluxehome.ba, mirnanamjestaj.ba, kesten.ba
 #   inside.ba (forbids automated visits, doesn't answer), soffy.ba (showroom only, no prices), loft.ba (no prices in listings),

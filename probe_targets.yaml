@@ -1,3 +1,4 @@
-# Candidate furniture shops to test (see shops.yaml for the ones already added and the ones left out).
+# Candidate shops to test (see shops.yaml for the ones already added and the ones left out).
 targets:
-  - {id: ednam, home: https://edna-m.ba, urls: [https://edna-m.ba/dnevna-soba, https://edna-m.ba/spavaca-soba, https://edna-m.ba/odlaganje]}
+  - {id: viva, home: https://www.viva.ba, auto: true, urls: [https://www.viva.ba]}
+  - {id: bijelatehnika, home: https://olx.ba/shops/BijelaTehnika, urls: [https://olx.ba/shops/BijelaTehnika/aktivni, https://olx.ba/shops/BijelaTehnika]}
