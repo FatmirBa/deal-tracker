@@ -22,16 +22,16 @@
   "count": 0,
   "method": null,
   "render": false,
-  "at": "2026-11-05T23:43:43.236432+00:00",
+  "at": "2026-11-06T23:18:26.398657+00:00",
   "home_status": 200,
   "error": null
  },
  "laurel": {
-  "search": null,
-  "count": 0,
-  "method": null,
+  "search": "https://www.laurelshop.ba/?post_type=product&dgwt_wcas=1&s={q}",
+  "count": 8,
+  "method": "cards",
   "render": false,
-  "at": "2026-11-05T23:43:43.236432+00:00",
+  "at": "2026-11-06T23:18:26.398657+00:00",
   "home_status": 200,
   "error": null
  },
