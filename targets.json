@@ -1,0 +1,133 @@
+{
+ "viva": {
+  "home": "https://viva.ba",
+  "pages": [
+   {
+    "url": "https://viva.ba",
+    "status": 200,
+    "render": false,
+    "count": 0,
+    "method": null,
+    "sample": []
+   },
+   {
+    "url": "https://viva.ba/",
+    "status": 200,
+    "render": false,
+    "count": 0,
+    "method": null,
+    "sample": []
+   }
+  ],
+  "robots_disallow_all": false,
+  "home_status": 200,
+  "auto_links": {
+   "sofa": [
+    "https://viva.ba/"
+   ],
+   "wardrobe": [
+    "https://viva.ba/"
+   ]
+  },
+  "search": null,
+  "search_count": 0
+ },
+ "bijelatehnika": {
+  "home": "https://bijelatehnika.com",
+  "pages": [
+   {
+    "url": "https://bijelatehnika.com/proizvodi/ugradbena-i-bijela-tehnika/ves-masine-i-susilice/ves-masine",
+    "status": 200,
+    "render": false,
+    "count": 24,
+    "method": "cards",
+    "sample": [
+     {
+      "t": "ELECTROLUX – ELECTROLUX E4WHPA02 Antivibracijske podloske",
+      "p": 0.9,
+      "o": 20.0,
+      "img": true
+     },
+     {
+      "t": "EUROSTAR – EUROSTAR veš mašina WM 10006 WD 2168",
+      "p": 20.3,
+      "o": 449.0,
+      "img": true
+     },
+     {
+      "t": "VIVAX – VIVAX HOME veš mašina WFL-100616CDS",
+      "p": 21.2,
+      "o": 499.0,
+      "img": true
+     },
+     {
+      "t": "VIVAX – VIVAX HOME veš mašina WFL-100616CDSI",
+      "p": 21.47,
+      "o": 555.0,
+      "img": true
+     },
+     {
+      "t": "PKM – PKM veš mašina WA6 1014A",
+      "p": 21.7,
+      "o": 589.0,
+      "img": true
+     },
+     {
+      "t": "VIVAX – VIVAX HOME veš mašina WFL-120716SSI",
+      "p": 21.93,
+      "o": 559.0,
+      "img": true
+     }
+    ]
+   },
+   {
+    "url": "https://bijelatehnika.com/proizvodi/televizori-i-av-uredaji/televizori",
+    "status": 200,
+    "render": false,
+    "count": 24,
+    "method": "cards",
+    "sample": [
+     {
+      "t": "DENVER – DENVER resiver DVBS-206HD",
+      "p": 2.67,
+      "o": 59.0,
+      "img": true
+     },
+     {
+      "t": "DENVER – DENVER resiver DTB-148",
+      "p": 2.94,
+      "o": 65.0,
+      "img": true
+     },
+     {
+      "t": "GoGEN – Televizor GoGEN TVH 24P352T",
+      "p": 7.57,
+      "o": 239.0,
+      "img": true
+     },
+     {
+      "t": "VIVAX – VIVAX IMAGO TV 32LE116T2S2",
+      "p": 9.0,
+      "o": 199.0,
+      "img": true
+     },
+     {
+      "t": "TESLA – TESLA TV 32M325BH HD",
+      "p": 9.45,
+      "o": 209.0,
+      "img": true
+     },
+     {
+      "t": "HORIZON – HORIZON TV LED 24HL4300H/C",
+      "p": 9.45,
+      "o": 209.0,
+      "img": true
+     }
+    ]
+   }
+  ],
+  "robots_disallow_all": false,
+  "search": "https://bijelatehnika.com/proizvodi/upit?pretraga={q}",
+  "search_count": 24
+ }
+}

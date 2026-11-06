@@ -1,0 +1,12 @@
+## viva home HTTP 200 (headless); found sofa links ['https://viva.ba/'], wardrobe links ['https://viva.ba/']
+## viva [https://viva.ba] HTTP 200, 0 products via None
+## viva [https://viva.ba/] HTTP 200, 0 products via None
+   search: None (0 products); robots blocks all: False
+- 21.7 (old 589.0) PKM – PKM veš mašina WA6 1014A
+## bijelatehnika [https://bijelatehnika.com/proizvodi/televizori-i-av-uredaji/televizori] HTTP 200, 24 products via cards
+- 2.67 (old 59.0) DENVER – DENVER resiver DVBS-206HD
+- 2.94 (old 65.0) DENVER – DENVER resiver DTB-148
+- 7.57 (old 239.0) GoGEN – Televizor GoGEN TVH 24P352T
+- 9.0 (old 199.0) VIVAX – VIVAX IMAGO TV 32LE116T2S2
+- 9.45 (old 209.0) TESLA – TESLA TV 32M325BH HD
+   search: https://bijelatehnika.com/proizvodi/upit?pretraga={q} (24 products); robots blocks all: False
