@@ -43,5 +43,14 @@
   "at": "2026-11-05T23:43:43.236432+00:00",
   "home_status": 200,
   "error": null
+ },
+ "viva": {
+  "search": null,
+  "count": 0,
+  "method": null,
+  "render": false,
+  "at": "2026-11-06T13:47:29.507741+00:00",
+  "home_status": 200,
+  "error": null
  }
 }
