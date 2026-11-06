@@ -82,3 +82,13 @@ def test_pipeline(tmp_path, monkeypatch):
     # second run same prices: no repeat alerts
     sent.clear(); run.main([])
     assert not sent
+
+
+def test_numbered_pager_next_page():
+    """Pager without a 'next' link: "1 [2] 3" with the current page marked li.active -> follow the next number."""
+    pager = ('<html><body><ul class="menu"><li class="active"><a href="/">Home</a></li><li><a href="/about">About</a></li></ul>'
+             '<ul><li class=""><a href="/c?stranica=1">1</a></li><li class="active"><span>2</span></li>'
+             '<li class=""><a href="/c?stranica=3">3</a></li></ul></body></html>')
+    assert run.next_page_url(pager, "https://shop.test/c?stranica=2") == "https://shop.test/c?stranica=3"
+    last = '<html><body><ul><li class=""><a href="/c?stranica=1">1</a></li><li class="active"><span>2</span></li></ul></body></html>'
+    assert run.next_page_url(last, "https://shop.test/c?stranica=2") is None

@@ -68,6 +68,13 @@ def next_page_url(html: str, base: str) -> str | None:
     el = soup.find("link", rel="next") or soup.find("a", rel="next") or soup.select_one("a.next, a.next.page-numbers, li.next a, .pagination-next a, a[aria-label*='Next'], a[aria-label*='Sljede']")
     if el is None:
         el = next((a for a in soup.select(".pagination a, .page-numbers a, nav a, .pager a") if NEXT_TEXT.match(a.get_text(" "))), None)
+    if el is None:  # numbered pager: "1 [2] 3 4" with the current page marked active; take the number after it
+        for cur in soup.select("li.active, li.current, li.selected"):
+            nxt = cur.find_next_sibling("li")
+            a = nxt.find("a", href=True) if nxt is not None else None
+            if cur.get_text(strip=True).isdigit() and a is not None and a.get_text(strip=True).isdigit():
+                el = a
+                break
     href = el.get("href") if el is not None else None
     if not href or href.startswith(("#", "javascript:")):
         return None

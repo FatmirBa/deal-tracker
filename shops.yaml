@@ -67,6 +67,13 @@ shops:
     home: https://bijelatehnika.com
     search: https://bijelatehnika.com/proizvodi?pretraga={q}
     kinds: [appliances]
+    max_pages: 8         # numbered pager (?stranica=N); TVs run to 7+ pages
+    selectors:           # the generic reader would take the monthly instalment ("Ili mjesečno već od ...") as the price
+      card: div.catalog-product-card
+      title: a.product-name-link
+      price: p.price
+      old_price: p.price del
+      link: a.product-name-link
     pages:   # category pages list everything, with "was" prices
       washer: [https://bijelatehnika.com/proizvodi/ugradbena-i-bijela-tehnika/ves-masine-i-susilice/ves-masine]
       dryer: [https://bijelatehnika.com/proizvodi/ugradbena-i-bijela-tehnika/ves-masine-i-susilice/susilice]
@@ -141,7 +148,7 @@ shops:
 # Tested and left out:
 #   blocked automated visits (HTTP 403): zeusbl.com, 3dbox.ba, deluxehome.ba, mirnanamjestaj.ba, kesten.ba
 #   inside.ba (forbids automated visits, doesn't answer), soffy.ba (showroom only, no prices), loft.ba (no prices in listings),
-#   Viva namještaj (no website, only Facebook/Instagram)
+#   viva.ba (only a placeholder page with a Viber link, no products), adaa.ba (made to order, every product says "Na upit", no prices)
 #   no readable prices: zokielektronika.ba (JavaScript only), tehnomag.com (prices without currency), sinmax.ba, kalea.ba (no prices online)
 #   not in BiH: Forma Ideale, Emmezeta, IKEA
 candidates: []
