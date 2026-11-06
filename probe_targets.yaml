@@ -1,4 +1,4 @@
 # Candidate shops to test (see shops.yaml for the ones already added and the ones left out).
 targets:
-  - {id: viva, home: https://www.viva.ba, auto: true, urls: [https://www.viva.ba]}
-  - {id: bijelatehnika, home: https://olx.ba/shops/BijelaTehnika, urls: [https://olx.ba/shops/BijelaTehnika/aktivni, https://olx.ba/shops/BijelaTehnika]}
+  - {id: viva, home: https://viva.ba, auto: true, urls: [https://viva.ba]}
+  - {id: bijelatehnika, home: https://bijelatehnika.com, urls: [https://bijelatehnika.com/proizvodi/ugradbena-i-bijela-tehnika/ves-masine-i-susilice/ves-masine, https://bijelatehnika.com/proizvodi/televizori-i-av-uredaji/televizori]}

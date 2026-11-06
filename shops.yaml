@@ -62,6 +62,19 @@ shops:
       fridge: [https://topizbor.ba/rashladni-aparati/frizideri-sa-zamrzivacem, https://topizbor.ba/rashladni-aparati/frizideri]
       tv: [https://topizbor.ba/televizori]
 
+  - id: bijelatehnika
+    name: Bijela tehnika
+    home: https://bijelatehnika.com
+    search: https://bijelatehnika.com/proizvodi?pretraga={q}
+    kinds: [appliances]
+    pages:   # category pages list everything, with "was" prices
+      washer: [https://bijelatehnika.com/proizvodi/ugradbena-i-bijela-tehnika/ves-masine-i-susilice/ves-masine]
+      dryer: [https://bijelatehnika.com/proizvodi/ugradbena-i-bijela-tehnika/ves-masine-i-susilice/susilice]
+      dishwasher: [https://bijelatehnika.com/proizvodi/ugradbena-i-bijela-tehnika/pranje-posuda/samostojece-perilice-za-sude,
+                   https://bijelatehnika.com/proizvodi/ugradbena-i-bijela-tehnika/pranje-posuda/ugradbene-perilice-za-sude]
+      fridge: [https://bijelatehnika.com/proizvodi/ugradbena-i-bijela-tehnika/frizideri-i-zamrzivaci/samostojeci-frizideri]
+      tv: [https://bijelatehnika.com/proizvodi/televizori-i-av-uredaji/televizori]
+
   - id: bingo
     name: Bingo
     home: https://bingoshop.ba
