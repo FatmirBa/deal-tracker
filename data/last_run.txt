@@ -13,4 +13,4 @@
 [ezam] 12 products from 2 searches (0 errors) via cards
 [domavija] 61 products from 6 searches (0 errors) via cards
 [laurel] 32 products from 4 searches (0 errors) via cards
-Done: 1627 products from 15/15 shops in 369s
+Done: 1627 products from 15/15 shops in 252s
