@@ -1,7 +1,7 @@
 [domod] 72 products from 17 searches (0 errors) via cards
 [imtec] 25 products from 12 searches (0 errors) via embedded
 [technoshop] 74 products from 8 searches (0 errors) via cards
-[tehnodepo] 301 products from 19 searches (0 errors) via cards
+[tehnodepo] 300 products from 19 searches (0 errors) via cards
 [topizbor] 164 products from 21 searches (0 errors) via cards
 [bijelatehnika] 411 products from 21 searches (0 errors) via selectors
 [bingo] 84 products from 12 searches (0 errors) via cards
@@ -13,4 +13,4 @@
 [ezam] 12 products from 2 searches (0 errors) via cards
 [domavija] 61 products from 6 searches (0 errors) via cards
 [laurel] 32 products from 4 searches (0 errors) via cards
-Done: 1617 products from 15/15 shops in 282s
+Done: 1616 products from 15/15 shops in 380s
