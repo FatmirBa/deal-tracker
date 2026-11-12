@@ -82,6 +82,26 @@ shops:
       fridge: [https://bijelatehnika.com/proizvodi/ugradbena-i-bijela-tehnika/frizideri-i-zamrzivaci/samostojeci-frizideri]
       tv: [https://bijelatehnika.com/proizvodi/televizori-i-av-uredaji/televizori]
 
+  - id: bigbang
+    name: Big Bang
+    home: https://www.bigbang.ba
+    search: https://www.bigbang.ba/pretraga/?q={q}
+    kinds: [appliances]
+    page_param: page     # ?page=N, no "next" link; 30 cards per page
+    max_pages: 12
+    selectors:           # cards also carry "ili 26,25 KM / 24 rate" text that must not be read as the price
+      card: article.cp
+      title: .cp-title
+      price: .current-price
+      old_price: del.old-price
+      link: a.cp-product-link-overlay
+    pages:
+      washer: [https://www.bigbang.ba/bijela-tehnika/masine-za-pranje-i-susenje-vesa/masine-za-pranje-vesa/]
+      dryer: [https://www.bigbang.ba/bijela-tehnika/masine-za-pranje-i-susenje-vesa/susilice-za-ves/]
+      dishwasher: [https://www.bigbang.ba/bijela-tehnika/pranje-posuda/masine-za-pranje-posuda/]
+      fridge: [https://www.bigbang.ba/bijela-tehnika/frizideri-i-zamrzivaci/frizideri/]
+      tv: [https://www.bigbang.ba/tv-i-audio/televizori-i-dodaci/televizori/]
+
   - id: bingo
     name: Bingo
     home: https://bingoshop.ba

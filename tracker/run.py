@@ -12,7 +12,7 @@ import sys
 import time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from urllib.parse import quote_plus
+from urllib.parse import parse_qsl, quote_plus, urlencode, urlsplit, urlunsplit
 
 import yaml
 
@@ -82,6 +82,13 @@ def next_page_url(html: str, base: str) -> str | None:
     return None if nxt.rstrip("/") == base.rstrip("/") else nxt
 
 
+def page_url(url: str, param: str, n: int) -> str:
+    """The same category address with its page number set (?page=2), other query parts kept."""
+    parts = urlsplit(url)
+    query = [(k, v) for k, v in parse_qsl(parts.query, keep_blank_values=True) if k != param] + [(param, str(n))]
+    return urlunsplit(parts._replace(query=urlencode(query, safe=",")))
+
+
 def crawl(shops_cfg, watch, only_shop=None):
     f = Fetcher(delay=shops_cfg.get("delay_seconds", 1.5))
     disc = load_json(DISCOVERED, {})
@@ -128,10 +135,11 @@ def crawl(shops_cfg, watch, only_shop=None):
                     targets = [(template.replace("{q}", quote_plus(q)), False) for q in item["queries"]]
                 else:
                     continue
-                queue = [(url, trusted, 1) for url, trusted in targets]
+                queue = [(url, trusted, 1, url) for url, trusted in targets]
                 seen_urls = set()
+                chain_seen: dict[str, set] = {}   # product addresses already met per category (for ?page=N shops)
                 while queue:
-                    url, trusted, page_no = queue.pop(0)
+                    url, trusted, page_no, chain = queue.pop(0)
                     if url in seen_urls:
                         continue
                     seen_urls.add(url)
@@ -144,8 +152,15 @@ def crawl(shops_cfg, watch, only_shop=None):
                     # category pages: follow "next page" so shops with 9-16 items per page are fully covered
                     if item["id"] in pages and prods and page_no < int(shop.get("max_pages", 4)):
                         nxt = next_page_url(text, final)
+                        if not nxt and shop.get("page_param"):
+                            # no "next" link in the page: count up ?page=N until a page brings nothing new
+                            met = chain_seen.setdefault(chain, set())
+                            fresh = {key_for(p.url) for p in prods} - met
+                            met |= fresh
+                            if fresh:
+                                nxt = page_url(chain, shop["page_param"], page_no + 1)
                         if nxt and nxt not in seen_urls:
-                            queue.append((nxt, trusted, page_no + 1))
+                            queue.append((nxt, trusted, page_no + 1, chain))
                     st["method"] = st["method"] or rep.get("used")
                     for p in prods:
                         if not accepts(p.title, p.price, item, common_ex, bool(shop.get("marketplace")), trusted):

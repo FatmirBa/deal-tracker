@@ -92,3 +92,33 @@ def test_numbered_pager_next_page():
     assert run.next_page_url(pager, "https://shop.test/c?stranica=2") == "https://shop.test/c?stranica=3"
     last = '<html><body><ul><li class=""><a href="/c?stranica=1">1</a></li><li class="active"><span>2</span></li></ul></body></html>'
     assert run.next_page_url(last, "https://shop.test/c?stranica=2") is None
+
+
+def test_page_param_paging(tmp_path, monkeypatch):
+    """Category page without a 'next' link: count up ?page=N until a page brings nothing new (a repeated page ends it)."""
+    os.chdir(tmp_path)
+    src = Path(__file__).resolve().parents[1]
+    Path("watchlist.yaml").write_text((src / "watchlist.yaml").read_text())
+    pages = {1: [("w1", "Gorenje veš mašina WNEI84APS 8kg", 579, None), ("w2", "Beko veš mašina B3WFU57215W 7kg", 529, None),
+                 ("w3", "Candy veš mašina CS1072DE 7kg", 399, None)],
+             2: [("w4", "Bosch veš mašina WAN28281BY 8kg", 749, None), ("w5", "Haier veš mašina HW80B14 8kg", 649, None),
+                 ("w6", "Vivax veš mašina WFL-100616 6kg", 469, None)]}
+    asked = []
+
+    class PagedFetcher:
+        def __init__(self, delay=0, timeout=0): pass
+        def close(self): pass
+        def get(self, url, render=False):
+            asked.append(url)
+            n = int(url.split("page=")[1]) if "page=" in url else 1
+            return 200, url, cards(pages.get(n, pages[2]))   # page 3 repeats page 2, like shops that clamp to the last page
+
+    monkeypatch.setattr(run, "Fetcher", PagedFetcher)
+    cfg = {"delay_seconds": 0, "shops": [{"id": "paged", "name": "Paged", "home": "https://paged.test", "kinds": ["appliances"],
+           "page_param": "page", "max_pages": 9, "pages": {"washer": ["https://paged.test/ves/"]}}]}
+    watch = yaml.safe_load(Path("watchlist.yaml").read_text())
+    found, status = run.crawl(cfg, watch)
+    assert len(found) == 6
+    category = [u for u in asked if "/ves/" in u]   # (the fetcher is also asked for the home page while a search page is looked for)
+    assert category == ["https://paged.test/ves/", "https://paged.test/ves/?page=2", "https://paged.test/ves/?page=3"]
+    assert status["paged"]["errors"] == 0

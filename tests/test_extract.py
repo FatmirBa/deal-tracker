@@ -91,3 +91,23 @@ def test_json_map_feed():
     assert (prods[0].price, prods[0].old_price, prods[0].url) == (1604.0, 2139.0, "https://viva.test/products/602")
     assert prods[0].image == "https://api.test/i/602.jpg"
     assert (prods[1].price, prods[1].old_price, prods[1].image) == (649.0, None, None)
+
+
+def test_bigbang_cards_ignore_instalments():
+    sel = {"card": "article.cp", "title": ".cp-title", "price": ".current-price",
+           "old_price": "del.old-price", "link": "a.cp-product-link-overlay"}
+    def card(i, name, cur, old=None):
+        old_html = f'<del class="old-price">{old} KM</del>' if old else ""
+        return (f'<article class="cp"><a class="cp-product-link-overlay" href="/{name}-p-{i}/"></a>'
+                f'<div class="cp-title">Perilica rublja {name.split('-',1)[0].title()} {name.split('-',1)[1].upper().replace('-','')}</div>'
+                f'<div class="cp-card-price-row"><div class="price cp-price"><div class="price-line">'
+                f'<div class="current-price">{cur} KM</div>{old_html}</div></div></div>'
+                f'<div>ili 26,25 KM / 24 rate</div></article>')
+    html = "<html><body>" + card(1, "beko-bm3wfsu38213wpbb", "629,90", "839") \
+        + card(2, "bosch-wan28163by", "845") + card(3, "gorenje-wnei84aps", "699") + "</body></html>"
+    items, info = extract(html, "https://www.bigbang.ba", sel)
+    by = {p.title.split()[-1]: p for p in items}
+    assert len(items) == 3
+    assert by["BM3WFSU38213WPBB"].price == 629.9 and by["BM3WFSU38213WPBB"].old_price == 839
+    assert by["WAN28163BY"].price == 845 and not by["WAN28163BY"].old_price
+    assert items[0].url == "https://www.bigbang.ba/beko-bm3wfsu38213wpbb-p-1/"
