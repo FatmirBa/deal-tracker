@@ -9,11 +9,11 @@
   "error": null
  },
  "jysk": {
-  "search": null,
+  "search": "https://jysk.ba/?s={q}&post_type=product",
   "count": 12,
   "method": "cards",
   "render": true,
-  "at": "2026-11-04T12:05:17.473871+00:00",
+  "at": "2026-11-12T20:09:27.280750+00:00",
   "home_status": 200,
   "error": null
  },
@@ -22,7 +22,7 @@
   "count": 0,
   "method": null,
   "render": false,
-  "at": "2026-11-11T19:44:40.414344+00:00",
+  "at": "2026-11-12T20:09:27.280750+00:00",
   "home_status": 200,
   "error": null
  },
