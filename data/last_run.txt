@@ -3,9 +3,9 @@
 [technoshop] 74 products from 8 searches (0 errors) via cards
 [tehnodepo] 301 products from 19 searches (0 errors) via cards
 [topizbor] 164 products from 21 searches (0 errors) via cards
-[bijelatehnika] 407 products from 21 searches (0 errors) via selectors
+[bijelatehnika] 404 products from 21 searches (0 errors) via selectors
 [bingo] 84 products from 12 searches (0 errors) via cards
-[fontele] 129 products from 12 searches (0 errors) via cards
+[fontele] 130 products from 12 searches (0 errors) via cards
 [genelec] 31 products from 2 searches (0 errors) via cards
 [procomp] 26 products from 2 searches (0 errors) via embedded
 [viva] 137 products from 2 searches (0 errors) via jsonmap
@@ -14,4 +14,4 @@
 [domavija] 61 products from 6 searches (0 errors) via cards
 [laurel] 32 products from 4 searches (0 errors) via cards
 Telegram: sent 1 alerts
-Done: 1613 products from 15/15 shops in 421s
+Done: 1611 products from 15/15 shops in 347s
