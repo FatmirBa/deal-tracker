@@ -1,4 +1,7 @@
 # Candidate shops to test (see shops.yaml for the ones already added and the ones left out).
 targets:
-  - {id: viva, home: https://viva.ba, auto: true, urls: [https://viva.ba]}
-  - {id: bijelatehnika, home: https://bijelatehnika.com, urls: [https://bijelatehnika.com/proizvodi/ugradbena-i-bijela-tehnika/ves-masine-i-susilice/ves-masine, https://bijelatehnika.com/proizvodi/televizori-i-av-uredaji/televizori]}
+  - {id: bigbang, home: https://www.bigbang.ba, urls: [https://www.bigbang.ba/bijela-tehnika/masine-za-pranje-i-susenje-vesa/masine-za-pranje-vesa/, "https://www.bigbang.ba/bijela-tehnika/masine-za-pranje-i-susenje-vesa/masine-za-pranje-vesa/?page=2"]}
+  - {id: neptun1, home: https://www.neptun.ba, auto: true, urls: [https://www.neptun.ba]}
+  - {id: neptun2, home: https://neptun.ba, auto: true, urls: [https://neptun.ba]}
+  - {id: neptun3, home: https://www.neptun.com.ba, auto: true, urls: [https://www.neptun.com.ba]}
+  - {id: neptun4, home: https://neptunbih.ba, auto: true, urls: [https://neptunbih.ba]}
