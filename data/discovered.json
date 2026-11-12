@@ -9,7 +9,7 @@
   "error": null
  },
  "jysk": {
-  "search": "https://jysk.ba/?s={q}&post_type=product",
+  "search": null,
   "count": 12,
   "method": "cards",
   "render": true,
