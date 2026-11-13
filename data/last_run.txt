@@ -1,9 +1,9 @@
 [domod] 74 products from 17 searches (0 errors) via cards
 [imtec] 25 products from 12 searches (0 errors) via embedded
 [technoshop] 74 products from 8 searches (0 errors) via cards
-[tehnodepo] 304 products from 19 searches (0 errors) via cards
-[topizbor] 164 products from 21 searches (0 errors) via cards
-[bijelatehnika] 395 products from 21 searches (0 errors) via selectors
+[tehnodepo] 305 products from 19 searches (0 errors) via cards
+[topizbor] 174 products from 21 searches (0 errors) via cards
+[bijelatehnika] 394 products from 21 searches (0 errors) via selectors
 [bingo] 84 products from 12 searches (0 errors) via cards
 [fontele] 129 products from 12 searches (0 errors) via cards
 [genelec] 30 products from 2 searches (0 errors) via cards
@@ -13,4 +13,5 @@
 [ezam] 12 products from 2 searches (0 errors) via cards
 [domavija] 61 products from 6 searches (0 errors) via cards
 [laurel] 32 products from 4 searches (0 errors) via cards
-Done: 1603 products from 15/15 shops in 359s
+Telegram: sent 1 alerts
+Done: 1613 products from 15/15 shops in 257s
