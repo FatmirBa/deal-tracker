@@ -3,7 +3,7 @@
 [technoshop] 74 products from 8 searches (0 errors) via cards
 [tehnodepo] 307 products from 19 searches (0 errors) via cards
 [topizbor] 174 products from 21 searches (0 errors) via cards
-[bijelatehnika] 393 products from 20 searches (0 errors) via selectors
+[bijelatehnika] 391 products from 21 searches (0 errors) via selectors
 [bingo] 88 products from 12 searches (0 errors) via cards
 [fontele] 128 products from 12 searches (0 errors) via cards
 [genelec] 30 products from 2 searches (0 errors) via cards
@@ -13,5 +13,4 @@
 [ezam] 12 products from 2 searches (0 errors) via cards
 [domavija] 61 products from 6 searches (0 errors) via cards
 [laurel] 32 products from 4 searches (0 errors) via cards
-Telegram: sent 17 alerts
-Done: 1617 products from 15/15 shops in 398s
+Done: 1615 products from 15/15 shops in 342s
