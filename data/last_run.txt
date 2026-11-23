@@ -9,8 +9,8 @@
 [genelec] 33 products from 2 searches (0 errors) via cards
 [procomp] 26 products from 2 searches (0 errors) via embedded
 [viva] 137 products from 2 searches (0 errors) via jsonmap
-[jysk] 55 products from 3 searches (0 errors) via cards
+[jysk] 54 products from 3 searches (0 errors) via cards
 [ezam] 12 products from 2 searches (0 errors) via cards
 [domavija] 60 products from 6 searches (0 errors) via cards
 [laurel] 32 products from 4 searches (0 errors) via cards
-Done: 1589 products from 15/15 shops in 444s
+Done: 1588 products from 15/15 shops in 248s
