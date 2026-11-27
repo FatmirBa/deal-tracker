@@ -1,16 +1,17 @@
-[domod] 69 products from 17 searches (0 errors) via cards
-[imtec] 0 products from 12 searches (12 errors) via None
+[domod] 68 products from 17 searches (0 errors) via cards
+[imtec] 25 products from 12 searches (0 errors) via embedded
 [technoshop] 74 products from 8 searches (0 errors) via cards
-[tehnodepo] 311 products from 19 searches (0 errors) via cards
+[tehnodepo] 310 products from 19 searches (0 errors) via cards
 [topizbor] 174 products from 21 searches (0 errors) via cards
-[bijelatehnika] 355 products from 18 searches (0 errors) via selectors
+[bijelatehnika] 375 products from 18 searches (0 errors) via selectors
 [bingo] 87 products from 12 searches (0 errors) via cards
 [fontele] 125 products from 12 searches (0 errors) via cards
-[genelec] 32 products from 2 searches (0 errors) via cards
+[genelec] 33 products from 2 searches (0 errors) via cards
 [procomp] 26 products from 2 searches (0 errors) via embedded
 [viva] 136 products from 2 searches (0 errors) via jsonmap
-[jysk] 53 products from 3 searches (0 errors) via cards
+[jysk] 54 products from 3 searches (0 errors) via cards
 [ezam] 12 products from 2 searches (0 errors) via cards
 [domavija] 60 products from 6 searches (0 errors) via cards
 [laurel] 32 products from 4 searches (0 errors) via cards
-Done: 1546 products from 14/15 shops in 469s
+Telegram: sent 3 alerts
+Done: 1591 products from 15/15 shops in 252s
