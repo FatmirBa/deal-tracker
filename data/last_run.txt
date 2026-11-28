@@ -3,15 +3,15 @@
 [technoshop] 74 products from 8 searches (0 errors) via cards
 [tehnodepo] 310 products from 19 searches (0 errors) via cards
 [topizbor] 174 products from 21 searches (0 errors) via cards
-[bijelatehnika] 370 products from 18 searches (0 errors) via selectors
+[bijelatehnika] 371 products from 18 searches (0 errors) via selectors
 [bingo] 87 products from 12 searches (0 errors) via cards
 [fontele] 125 products from 12 searches (0 errors) via cards
 [genelec] 34 products from 2 searches (0 errors) via cards
 [procomp] 26 products from 2 searches (0 errors) via embedded
 [viva] 136 products from 2 searches (0 errors) via jsonmap
-[jysk] 54 products from 3 searches (0 errors) via cards
-[ezam] 12 products from 2 searches (0 errors) via cards
-[domavija] 60 products from 6 searches (0 errors) via cards
-[laurel] 32 products from 4 searches (0 errors) via cards
-Telegram: sent 1 alerts
-Done: 1587 products from 15/15 shops in 456s
+[jysk] 56 products from 3 searches (0 errors) via cards
+[ezam] 0 products from 1 searches (1 errors) via None
+[domavija] 0 products from 2 searches (2 errors) via None
+[laurel] 0 products from 1 searches (1 errors) via None
+Telegram: sent 2 alerts
+Done: 1486 products from 12/15 shops in 282s
